@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Client {
-    id String @id @default(cuid())
+    id Int @id @default(autoincrement())
     firstName String
 	lastName  String
 	email String @unique
@@ -17,28 +17,20 @@ model Client {
 }
 
 model Motorcycle {
-	id String @id() @default(cuid())
+    id Int @id @default(autoincrement())
 	name String
 	description String
-	year Int
+	year Int @default(2020)
 	price Float @default(0)
 	imgURL String
-    transactions TransactionMotorcycle[]
-}
-
-model TransactionMotorcycle {
-	id String @id() @default(cuid())
-    motoId String
-    moto Motorcycle @relation(fields: [motoId], references: [id])
-    quantity Int
-    transactions Transaction[]
 }
 
 model Transaction {
-    id String @id() @default(cuid())
-    clientId String
+    id Int @id @default(autoincrement())
+    clientId Int
     client Client @relation(fields: [clientId], references: [id])
-    total Float @default(0)
-    createdAt DateTime @default(now())
-    motorcycles TransactionMotorcycle[]
+    motorcycles String
+    createdAt String
 }
+
+// motos: id:qtd, id:qtd => [{}]
