@@ -1,20 +1,20 @@
-import { useState } from 'react';
+import { Client } from '@prisma/client';
+import { useContext, useState } from 'react';
 import { FiEdit, FiTrash, FiX } from 'react-icons/fi';
-import Global from '../../../../hooks/Global';
-import { capitalize, toCurrency, toDate } from '../../../../utils/functions';
-import { IClient } from '../../../../utils/interfaces';
-import DetailsModal from '../../../shared/DetailsModal';
+import { DataContext } from '../../../lib/DataContext';
+import { capitalize, toCurrency, toDate } from '../../../lib/helpers';
+import DetailsModal from '../../shared/DetailsModal';
 import ClientForm from '../ClientForm';
 import './client-details.module.css';
 
 interface IProps {
-	client: IClient;
+	client: Client;
 	onClose: (e: any) => void;
-	onDelete: (id: string) => void;
+	onDelete: (id: number) => void;
 }
 export default function ClientDetails({ client, onClose, onDelete }: IProps) {
 	const { id, email, firstName, lastName } = client;
-	const { transactions } = Global;
+	const { transactions } = useContext(DataContext);
 
 	const [editingMode, setEditingMode] = useState(false);
 
@@ -79,7 +79,7 @@ export default function ClientDetails({ client, onClose, onDelete }: IProps) {
 												transaction;
 
 											return (
-												<tr>
+												<tr key={transaction.id}>
 													<td>{i + 1}</td>
 													<td>{toCurrency(total)}</td>
 													<td>{toDate(createdAt)}</td>

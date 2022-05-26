@@ -1,13 +1,16 @@
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
-import { toCurrency, toDate } from '../../../../../utils/functions';
-import { ITransaction } from '../../../../../utils/interfaces';
+import {
+	CompleteTransaction,
+	toCurrency,
+	toDate,
+} from '../../../../lib/helpers';
 import TransactionDetails from '../../TransactionDetails';
 import './transaction.module.css';
 
 interface IProps {
-	transaction: ITransaction;
-	onDelete: (id: string) => void;
+	transaction: CompleteTransaction;
+	onDelete: (id: number) => void;
 }
 
 export default function TransactionItem({ transaction, onDelete }: IProps) {
@@ -38,11 +41,9 @@ export default function TransactionItem({ transaction, onDelete }: IProps) {
 						motorcycles.map(moto => {
 							const {
 								quantity,
-								motorcycle: {
-									name = '',
-									imgURL = '',
-									price = 0,
-								},
+								name = '',
+								imgURL = '',
+								price = 0,
 							} = moto;
 
 							return (

@@ -1,6 +1,6 @@
 import { Client, Motorcycle, Transaction } from '@prisma/client';
 
-interface CompleteTransaction {
+export interface CompleteTransaction {
 	id: number;
 	client: Client;
 	motorcycles: {

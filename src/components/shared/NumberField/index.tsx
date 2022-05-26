@@ -1,4 +1,4 @@
-import { capitalize } from '../../../utils/functions';
+import { capitalize } from '../../../lib/helpers';
 import './number-field.module.css';
 
 interface Props {

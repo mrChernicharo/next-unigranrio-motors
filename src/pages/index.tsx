@@ -1,11 +1,30 @@
-import type { GetStaticProps, NextPage } from 'next';
+import { Client, Motorcycle, Transaction } from '@prisma/client';
+import type { GetStaticProps } from 'next';
+import { useContext } from 'react';
 import Router from '../components/Router';
 import Nav from '../components/shared/Nav';
-import { getTransactionMotos } from '../lib/helpers';
+import { DataContext } from '../lib/DataContext';
+import { CompleteTransaction, getTransactionMotos } from '../lib/helpers';
 import { prismaClient } from '../lib/prismaClient';
 
-const Index: NextPage = props => {
-	console.log(props);
+export interface InitialProps {
+	clients: Client[];
+	motorcycles: Motorcycle[];
+	transactions: Transaction[];
+	completeTransactions: CompleteTransaction[];
+}
+
+const Index = ({
+	clients,
+	motorcycles,
+	transactions,
+	completeTransactions,
+}: InitialProps) => {
+	console.log({ clients, motorcycles, transactions, completeTransactions });
+
+	const { setClients, setMotorcycles, setTransactions } =
+		useContext(DataContext);
+
 	return (
 		<div>
 			<Nav />

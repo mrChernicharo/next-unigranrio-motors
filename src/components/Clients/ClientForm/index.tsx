@@ -1,23 +1,22 @@
-import { Field, Form, Formik, FormikProps } from 'formik';
+import { Client } from '@prisma/client';
+import { Form, Formik, FormikProps } from 'formik';
 import { nanoid } from 'nanoid';
-import Global from '../../../../hooks/Global';
-import { IClient, IPartialClient } from '../../../../utils/interfaces';
-import { clientSchema } from '../../../../utils/schemas';
-import TextField from '../../../shared/TextField';
+import { clientSchema } from '../../../lib/schemas';
+import TextField from '../../shared/TextField';
 
-interface IClientFormProps {
+interface ClientFormProps {
 	mode: 'create' | 'edit';
 	onSubmitted: () => void;
-	client?: IClient;
+	client?: Client;
 }
 export default function CreateClientForm({
 	mode,
 	onSubmitted,
 	client,
-}: IClientFormProps) {
-	const { createClient, updateClient } = Global;
+}: ClientFormProps) {
+	// const { createClient, updateClient } = Global;
 
-	let clientID = '';
+	let clientID = 0;
 	if (mode === 'edit' && client) clientID = client.id;
 
 	return (
@@ -34,15 +33,14 @@ export default function CreateClientForm({
 				onSubmit={(values, actions) => {
 					console.log({ values, actions });
 
-					if (mode === 'create') createClient(values);
-					if (mode === 'edit')
-						updateClient({ ...values, id: clientID });
+					// if (mode === 'create') createClient(values);
+					// if (mode === 'edit') updateClient({ ...values, id: clientID });
 
 					onSubmitted();
 				}}
 				enableReinitialize={true}
 			>
-				{({ errors, touched }: FormikProps<IPartialClient>) => {
+				{({ errors, touched }: FormikProps<Partial<Client>>) => {
 					return (
 						<Form>
 							<TextField

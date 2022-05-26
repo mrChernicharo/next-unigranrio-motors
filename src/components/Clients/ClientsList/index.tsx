@@ -1,16 +1,18 @@
+import { Client } from '@prisma/client';
 import * as React from 'react';
-import Global from '../../../../hooks/Global';
-import { IClient } from '../../../../utils/interfaces';
 import ClientItem from './ClientItem';
 
-interface IClientsListProps {
-	clients: IClient[];
+interface ClientsListProps {
+	clients: Client[];
 }
 
-export default function ClientsList({ clients }: IClientsListProps) {
-	const { deleteClient } = Global;
+export default function ClientsList({ clients }: ClientsListProps) {
+	// const { deleteClient } = Global;
 
-	const handleDeleteClient = (id: string) => deleteClient(id);
+	const handleDeleteClient = (id: number) => {
+		// deleteClient(id);
+		console.log(`delete id ${id}`);
+	};
 
 	return (
 		<div className="clients-list list-container">

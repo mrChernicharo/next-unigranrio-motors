@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import Global from '../../../hooks/Global';
-import { ITransaction } from '../../../utils/interfaces';
+import React, { useContext, useEffect, useState } from 'react';
+import { DataContext } from '../../lib/DataContext';
+import { CompleteTransaction } from '../../lib/helpers';
 import CreateTransaction from './CreateTransaction';
 import './transaction-page.module.css';
 import TransactionList from './TransactionsList';
 import TransactionsSearch from './TransactionsSearch';
 
 const TransactionsPage = () => {
-	const { transactions } = Global;
+	const { transactions } = useContext(DataContext);
 
 	// prettier-ignore
-	const [shownTransactions, setShownTransactions] = useState<ITransaction[]>([...transactions]);
+	const [shownTransactions, setShownTransactions] = useState<CompleteTransaction[]>([...transactions]);
 	const [searchTerm, setSearchTerm] = useState('');
 
 	const handleSearchChange = (searchStr: string) => {
@@ -25,7 +25,7 @@ const TransactionsPage = () => {
 				transactions.filter(transaction => {
 					const clientName = `${transaction.client.firstName.toLowerCase()} ${transaction.client.lastName.toLowerCase()}`;
 					const motoNames = transaction.motorcycles
-						.map(moto => moto.motorcycle.name.toLowerCase())
+						.map(moto => moto.name.toLowerCase())
 						.join(' ');
 
 					console.log({ clientName, motoNames, searchTerm });

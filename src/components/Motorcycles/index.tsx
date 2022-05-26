@@ -1,9 +1,11 @@
-import MotorcyclesList from './MotorcyclesList';
+import { useContext } from 'react';
+import { DataContext } from '../../lib/DataContext';
 import CreateMotorcycle from './CreateMotorcycle';
-import Global from '../../../hooks/Global';
+import MotorcyclesList from './MotorcyclesList';
+// import Global from '../../../hooks/Global';
 
 const Motorcycles = () => {
-	const { motorcycles } = Global;
+	const { motorcycles } = useContext(DataContext);
 	return (
 		<div className="page-container">
 			<h1>Motocicletas</h1>

@@ -1,7 +1,7 @@
 import { FiSearch } from 'react-icons/fi';
 import './transaction-search.module.css';
 
-interface ITransactionSearchProps {
+interface CompleteTransactionSearchProps {
 	onChange: (value: string) => void;
 }
 
@@ -9,7 +9,7 @@ const placeholder = 'Filtrar vendas por nome, moto ou valor...';
 
 export default function TransactionsSearch({
 	onChange,
-}: ITransactionSearchProps) {
+}: CompleteTransactionSearchProps) {
 	const handleChange = (e: any) => onChange(e.target.value.trim());
 	return (
 		<>

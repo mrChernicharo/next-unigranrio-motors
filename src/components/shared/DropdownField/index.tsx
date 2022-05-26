@@ -3,13 +3,13 @@ import { ReactNode } from 'react';
 import './dropdown.module.css';
 
 export interface IDropdownOption {
-	id: string;
+	id: number;
 	name: string;
 	value: string | number;
 }
 
 interface ISelectProps {
-	id: string;
+	id: number;
 	name: string;
 	label?: string;
 	placeholder?: string;

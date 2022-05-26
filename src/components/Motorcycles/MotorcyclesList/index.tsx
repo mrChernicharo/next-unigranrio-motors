@@ -1,6 +1,6 @@
+// import Global from '../../../../hooks/Global';
+import { Motorcycle } from '@prisma/client';
 import * as React from 'react';
-import Global from '../../../../hooks/Global';
-import { Motorcycle } from '../../../../utils/interfaces';
 import MotorcycleItem from './MotorcycleItem';
 import './motorcycles-list.module.css';
 
@@ -9,9 +9,12 @@ interface MotorcyclesListProps {
 }
 
 const MotorcyclesList = ({ motorcycles }: MotorcyclesListProps) => {
-	const { deleteMotorcycle } = Global;
+	// const { deleteMotorcycle } = useContext(DataContext);
 
-	const handleDeletedMotorcycle = (id: string) => deleteMotorcycle(id);
+	const handleDeletedMotorcycle = (id: number) => {
+		// deleteMotorcycle(id);
+		console.log(`delete ${id}`);
+	};
 	return (
 		<div className="motorcycles-list-container list-container">
 			{motorcycles.map(motorcycle => (

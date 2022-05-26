@@ -1,32 +1,33 @@
+import { Transaction } from '@prisma/client';
 import { ErrorMessage, FieldArray, Form, Formik, FormikProps } from 'formik';
 import { nanoid } from 'nanoid';
+import { useContext } from 'react';
 import { FiPlus, FiTrash } from 'react-icons/fi';
-import Global from '../../../../hooks/Global';
-import { toCurrency } from '../../../../utils/functions';
-import {
-	IPartialTransaction,
-	IPartialTransactionMotorcycle,
-	ITransaction,
-} from '../../../../utils/interfaces';
-import { transactionSchema } from '../../../../utils/schemas';
-import DropdownField, { IDropdownOption } from '../../../shared/DropdownField';
-import NumberField from '../../../shared/NumberField';
+import { DataContext } from '../../../lib/DataContext';
+import { CompleteTransaction } from '../../../lib/helpers';
+import { transactionSchema } from '../../../lib/schemas';
+import DropdownField, { IDropdownOption } from '../../shared/DropdownField';
+import NumberField from '../../shared/NumberField';
 import './create-transaction-form.module.css';
 
 interface IProps {
-	transaction?: ITransaction;
+	transaction?: CompleteTransaction;
 	onSubmitted: (e: any) => void;
 }
 
 export default function TransactionForm({ transaction, onSubmitted }: IProps) {
-	const { clients, motorcycles, createTransaction, updateTransaction } =
-		Global;
+	const {
+		clients,
+		motorcycles /**
+		 createTransaction, updateTransaction 
+	*/,
+	} = useContext(DataContext);
 
-	let transactionID = '';
+	let transactionID = 0;
 	if (transaction) transactionID = transaction.id;
 
 	const clientOpts: IDropdownOption[] = [
-		{ id: '', name: '', value: '' },
+		{ id: 0, name: '', value: '' },
 		...clients.map(client => ({
 			id: client.id,
 			name: `${client.firstName} ${client.lastName}`,
@@ -35,7 +36,7 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 	];
 
 	const motorcycleOpts: IDropdownOption[] = [
-		{ id: '', name: '', value: '' },
+		{ id: 0, name: '', value: '' },
 		...motorcycles.map(motorcycle => ({
 			id: motorcycle.id,
 			name: motorcycle.name,
@@ -43,9 +44,9 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 		})),
 	];
 
-	const getMoto = (id: string) => motorcycles.find(moto => moto.id === id);
+	const getMoto = (id: number) => motorcycles.find(moto => moto.id === id);
 
-	const getTotal = (motos: IPartialTransactionMotorcycle[]) =>
+	const getTotal = (motos: { id: number; quantity: number }[]) =>
 		motos.reduce(
 			(acc, moto) =>
 				(acc += (getMoto(moto.id)?.price || 0) * moto.quantity),
@@ -56,15 +57,15 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 		<Formik
 			initialValues={
 				{
-					clientId: transaction?.client?.id || '',
+					clientId: transaction?.client?.id || 0,
 					motorcycles: transaction?.motorcycles
 						? transaction?.motorcycles.map(item => ({
-								id: item.motorcycle.id,
+								id: item.id,
 								quantity: item.quantity,
 						  }))
-						: [{ id: '', quantity: 1 }],
+						: [{ id: 1, quantity: 1 }],
 					total: transaction?.total || 0,
-				} as IPartialTransaction
+				} as any
 			}
 			validationSchema={transactionSchema}
 			onSubmit={(values, actions) => {
@@ -72,18 +73,18 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 
 				const { resetForm } = actions;
 
-				transactionID
-					? updateTransaction({
-							id: transactionID,
-							clientId: values.clientId,
-							motorcycles: values.motorcycles,
-							total: getTotal(values.motorcycles),
-					  })
-					: createTransaction({
-							clientId: values.clientId,
-							motorcycles: values.motorcycles,
-							total: getTotal(values.motorcycles),
-					  });
+				// transactionID
+				// 	? updateTransaction({
+				// 			id: transactionID,
+				// 			clientId: values.clientId,
+				// 			motorcycles: values.motorcycles,
+				// 			total: getTotal(values.motorcycles),
+				// 	  })
+				// 	: createTransaction({
+				// 			clientId: values.clientId,
+				// 			motorcycles: values.motorcycles,
+				// 			total: getTotal(values.motorcycles),
+				// 	  });
 
 				resetForm();
 
@@ -96,13 +97,13 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 				values,
 				handleBlur,
 				handleChange,
-			}: FormikProps<IPartialTransaction>) => {
+			}: FormikProps<Partial<Transaction>>) => {
 				return (
 					<Form>
 						<h5>Cadastrar Venda</h5>
 
 						<DropdownField
-							id={nanoid()}
+							id={Math.random()}
 							name="clientId"
 							label="Cliente"
 							placeholder="Selecione o cliente"
@@ -229,7 +230,7 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 						<div>
 							<p>
 								Total:{' '}
-								{toCurrency(getTotal(values.motorcycles))}
+								{/* {toCurrency(getTotal(values.motorcycles))} */}
 							</p>
 						</div>
 					</Form>

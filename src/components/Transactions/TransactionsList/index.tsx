@@ -1,16 +1,18 @@
-import Global from '../../../../hooks/Global';
-import { ITransaction } from '../../../../utils/interfaces';
+import { CompleteTransaction } from '../../../lib/helpers';
 import './transaction-list.module.css';
 import Transaction from './TransactionItem';
 
 interface IProps {
-	transactions: ITransaction[];
+	transactions: CompleteTransaction[];
 }
 
 export default function TransactionList({ transactions }: IProps) {
-	const { deleteTransaction } = Global;
+	// const { deleteTransaction } = Global;
 
-	const handleDeleteTransaction = (id: string) => deleteTransaction(id);
+	const handleDeleteTransaction = (id: number) => {
+		//  deleteTransaction(id)
+		console.log(`delete id ${id}`);
+	};
 
 	return (
 		<ul className="list-container">

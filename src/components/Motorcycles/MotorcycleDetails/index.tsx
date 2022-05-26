@@ -2,8 +2,6 @@ import { Motorcycle } from '@prisma/client';
 import { useState } from 'react';
 import { FiEdit, FiTrash, FiX } from 'react-icons/fi';
 import { toCurrency } from '../../../lib/helpers';
-// import { toCurrency } from '../../../../utils/functions';
-// import { Motorcycle } from '../../../../utils/interfaces';
 import DetailsModal from '../../shared/DetailsModal';
 import MotorcycleForm from '../MotorcycleForm';
 import './motorcycle-details.module.css';

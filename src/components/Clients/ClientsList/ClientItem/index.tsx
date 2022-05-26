@@ -1,13 +1,13 @@
+import { Client } from '@prisma/client';
 import { useState } from 'react';
-import { IClient } from '../../../../../utils/interfaces';
 import ClientDetails from '../../ClientDetails';
 
-interface IClientItemProps {
-	client: IClient;
-	onDelete: (id: string) => void;
+interface ClientItemProps {
+	client: Client;
+	onDelete: (id: number) => void;
 }
 
-export default function ClientItem({ client, onDelete }: IClientItemProps) {
+export default function ClientItem({ client, onDelete }: ClientItemProps) {
 	const { firstName, lastName, email } = client;
 
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

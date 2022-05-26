@@ -1,16 +1,15 @@
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import { FiEdit, FiTrash, FiX } from 'react-icons/fi';
-import { toCurrency } from '../../../../utils/functions';
-import { ITransaction } from '../../../../utils/interfaces';
-import DetailsModal from '../../../shared/DetailsModal';
+import { CompleteTransaction, toCurrency } from '../../../lib/helpers';
+import DetailsModal from '../../shared/DetailsModal';
 import TransactionForm from '../TransactionForm';
 import './transaction-details.module.css';
 
 interface IProps {
-	transaction: ITransaction;
+	transaction: CompleteTransaction;
 	onClose: (e: any) => void;
-	onDelete: (id: string) => void;
+	onDelete: (id: number) => void;
 }
 
 export default function TransactionDetails({
@@ -58,10 +57,8 @@ export default function TransactionDetails({
 
 						<hr />
 						{motorcycles.map(moto => {
-							const {
-								motorcycle: { name, price, year, imgURL },
-								quantity,
-							} = moto;
+							const { name, price, year, imgURL, quantity } =
+								moto;
 
 							return (
 								<ul key={nanoid()}>

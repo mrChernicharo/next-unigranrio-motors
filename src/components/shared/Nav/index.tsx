@@ -1,6 +1,5 @@
 import { nanoid } from 'nanoid';
-import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import './nav.module.css';
 
 const pages = [
@@ -13,12 +12,12 @@ const pages = [
 const Nav = () => {
 	const [active, setActive] = useState(0);
 
-	const { pathname } = useLocation();
+	// const { pathname } = useLocation();
 
-	useEffect(
-		() => setActive(pages.findIndex(page => page.path === pathname)),
-		[pathname]
-	);
+	// useEffect(
+	// 	() => setActive(pages.findIndex(page => page.path === pathname)),
+	// 	[pathname]
+	// );
 
 	return (
 		<div className="nav-container">
@@ -26,13 +25,16 @@ const Nav = () => {
 
 			<span>
 				{pages.map((page, i) => (
-					<Link
-						key={nanoid()}
-						to={page.path}
-						className={active === i ? 'active' : ''}
-					>
+					<div key={nanoid()}>
 						<span>{page.name}</span>
-					</Link>
+					</div>
+					// <Link
+					// 	key={nanoid()}
+					// 	to={page.path}
+					// 	className={active === i ? 'active' : ''}
+					// >
+					// 	<span>{page.name}</span>
+					// </Link>
 				))}
 			</span>
 		</div>
