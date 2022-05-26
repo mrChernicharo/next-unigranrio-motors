@@ -1,16 +1,255 @@
+/* The switch - the box around the slider */
+:root {
+	--toggle-thumb-diameter: 20px;
+	--toggle-height: 28px;
+	--toggle-width: 54px;
+	--dark-bg: #222;
+	--bg-color: #333;
+	--text-color: #efe;
+}
+* {
+	box-sizing: border-box;
+}
+
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+	padding: 0;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+		Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+	background-color: var(--bg-color);
+	color: var(--text-color);
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+	color: inherit;
+	text-decoration: none;
 }
 
-* {
-  box-sizing: border-box;
+.nav-container {
+	width: 100vw;
+	padding: 0.5rem;
+	/* height: 38px; */
+	position: fixed;
+	background: var(--dark-bg);
+	top: 0;
+	display: flex;
+	justify-content: space-between;
+	z-index: 2;
+}
+
+.nav-container > span {
+	border: 1px solid red;
+	display: flex;
+	margin-inline: 0.25rem;
+}
+.nav-container span:last-child {
+	text-align: end;
+}
+
+.text-field-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.text-field-container label {
+	font-size: var(--normal-text);
+}
+
+.text-field-container input {
+	border-radius: 4px;
+}
+
+.error-message {
+	font-size: var(--small-text);
+	color: var(--accent);
+}
+
+.number-field-container {
+	display: flex;
+	flex-direction: column;
+	width: 40px;
+}
+/* 
+
+/* Hide default HTML checkbox */
+.slide-toggle-container .switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+/* The slider */
+.slide-toggle-container .slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
+}
+
+.slide-toggle-container .slider:before {
+	position: absolute;
+	content: '';
+	height: var(--toggle-thumb-diameter);
+	width: var(--toggle-thumb-diameter);
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
+}
+
+.slide-toggle-container input:checked + .slider {
+	background-color: var(--primary);
+}
+
+.slide-toggle-container input:focus + .slider {
+	box-shadow: 0 0 1px var(--primary);
+}
+
+.slide-toggle-container input:checked + .slider:before {
+	-webkit-transform: translateX(26px);
+	-ms-transform: translateX(26px);
+	transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slide-toggle-container .slider.round {
+	border-radius: 34px;
+}
+
+.slide-toggle-container .slider.round:before {
+	border-radius: 50%;
+}
+
+.select-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.select-container label {
+	font-size: var(--normal-text);
+}
+
+.select-container .dropdown-select {
+	/* background-color: red; */
+	display: flex;
+}
+
+p.email {
+	font-size: 16px;
+	font-weight: 600;
+	margin-block: 0.5rem;
+}
+
+.motorcycle-container {
+	/* // border: 2px solid red; */
+	min-width: 400px;
+}
+
+.motorcycle-container img {
+	height: 42px;
+	width: 60px;
+}
+
+.preview-container img {
+	width: 300px;
+	height: 160px;
+}
+
+/* transaction */
+.page-container {
+	padding-top: 10rem;
+}
+
+.search-input-container {
+	border: 1px solid;
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100vw;
+	background-color: var(--bg);
+	z-index: 1;
+}
+
+.search-input {
+	position: fixed;
+	top: 64px;
+	left: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #fff;
+	border-radius: 06px;
+	width: 400px;
+	margin: 0 auto;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px #31363f;
+	transition: 0.7s;
+}
+
+.search-input .search-input-icon {
+	position: relative;
+	color: var(--bg);
+	display: flex;
+}
+
+.search-input input {
+	background-color: transparent;
+	border: none;
+	width: 100%;
+	height: 32px;
+}
+
+@media screen and(max-width: 720px) {
+	.search-input {
+		left: 12px;
+	}
+}
+
+@media screen and(max-width: 450px) {
+	.search-input {
+		left: 0px;
+	}
+}
+
+.transaction-item {
+	background-color: rgb(60, 64, 76);
+}
+
+.form-row {
+	display: flex;
+}
+
+.transaction-container {
+	/* // border: 1px solid; */
+	padding: 2rem 1rem;
+}
+
+.transaction-container .transaction-itens-ul li p {
+	text-align: right;
+}
+
+li.transaction-li {
+	/* // border: 1px solid; */
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px #31363f;
+	border-radius: 12px;
+	padding: 0.5rem 1.5rem;
+	margin-bottom: 1rem;
+}
+
+li.transaction-li .moto-details {
+	/* // border: 1px solid; */
+	display: flex;
+	justify-content: space-between;
+}
+li.transaction-li img.transaction-img {
+	height: 60px;
 }

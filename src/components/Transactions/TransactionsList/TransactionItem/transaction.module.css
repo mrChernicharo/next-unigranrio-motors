@@ -1,8 +1,0 @@
-.transaction-container {
-	/* // border: 1px solid; */
-	padding: 2rem 1rem;
-}
-
-.transaction-container .transaction-itens-ul li p {
-	text-align: right;
-}

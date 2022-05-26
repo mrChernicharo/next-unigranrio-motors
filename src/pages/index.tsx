@@ -1,8 +1,7 @@
 import { Client, Motorcycle, Transaction } from '@prisma/client';
 import type { GetStaticProps } from 'next';
 import { useContext } from 'react';
-import Router from '../components/Router';
-import Nav from '../components/shared/Nav';
+import Home from '../components/Home';
 import { DataContext } from '../lib/DataContext';
 import { CompleteTransaction, getTransactionMotos } from '../lib/helpers';
 import { prismaClient } from '../lib/prismaClient';
@@ -26,10 +25,10 @@ const Index = ({
 		useContext(DataContext);
 
 	return (
-		<div>
-			<Nav />
-			<Router />
-			{/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
+		<div className="main">
+			<Home />
+			{/* <Router /> */}
+			{/* <pre>{JSON.stringify(completeTransactions, null, 2)}</pre> */}
 		</div>
 	);
 };
