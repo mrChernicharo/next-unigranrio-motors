@@ -1,0 +1,19 @@
+.number-field-container {
+	display: flex;
+	flex-direction: column;
+	width: 40px;
+	/* // // border: 1px solid;
+
+	// label {
+	// 	font-size: var(--normal-text);
+	// }
+
+	// input {
+	// 	border-radius: 4px;
+	// } */
+}
+/* 
+// .error-message {
+// 	font-size: var(--small-text);
+// 	color: var(--accent);
+// } */

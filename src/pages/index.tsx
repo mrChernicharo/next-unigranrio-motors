@@ -1,18 +1,20 @@
 import type { GetStaticProps, NextPage } from 'next';
+import Router from '../components/Router';
+import Nav from '../components/shared/Nav';
 import { getTransactionMotos } from '../lib/helpers';
 import { prismaClient } from '../lib/prismaClient';
 
-const Home: NextPage = props => {
+const Index: NextPage = props => {
 	console.log(props);
 	return (
 		<div>
-			Home
-			<pre>{JSON.stringify(props, null, 2)}</pre>
+			<Nav />
+			<Router />
+			{/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
 		</div>
 	);
 };
 
-// export const getServerSideProps: GetServerSideProps = async ctx => {
 export const getStaticProps: GetStaticProps = async ctx => {
 	// console.log(ctx);
 
@@ -37,4 +39,4 @@ export const getStaticProps: GetStaticProps = async ctx => {
 	};
 };
 
-export default Home;
+export default Index;

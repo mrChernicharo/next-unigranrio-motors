@@ -73,3 +73,21 @@ export const getTransactionMotos = (
 
 	return completeTransactions;
 };
+
+export const capitalize = (str: string) =>
+	`${str[0].toUpperCase()}${str.substring(1)}`;
+
+export const toCurrency = (num: number) =>
+	'R$' + num.toLocaleString('pt-BR') + ',00';
+
+// prettier-ignore
+export const toDate = (str: string | Date) =>
+	`${new Date(str).toLocaleDateString('pt-BR')} às ${new Date(str).toLocaleTimeString('pt-BR')}`;
+
+export const getClientById = (clients: Client[], id: number) => {
+	return clients.find(client => client.id === id);
+};
+
+export const getMotoById = (motorcycles: Motorcycle[], id: number) => {
+	return motorcycles.find(moto => moto.id === id);
+};

@@ -1,0 +1,11 @@
+/* .create-transaction-form-container {
+	// border: 1px solid;
+} */
+
+.transaction-item {
+	background-color: rgb(60, 64, 76);
+}
+
+.form-row {
+	display: flex;
+}

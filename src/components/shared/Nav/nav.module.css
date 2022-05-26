@@ -1,0 +1,19 @@
+.nav-container {
+	width: 100vw;
+	padding: 0.5rem;
+	/* height: 38px; */
+	position: fixed;
+	background: var(--dark-bg);
+	top: 0;
+	display: flex;
+	justify-content: space-between;
+	z-index: 2;
+}
+
+.container span {
+	display: inline-block;
+	margin-inline: 0.25rem;
+}
+.container span:last-child {
+	text-align: end;
+}
