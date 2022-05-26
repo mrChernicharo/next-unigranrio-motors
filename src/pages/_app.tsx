@@ -4,6 +4,7 @@ import { DataContextProvider } from '../lib/DataContext';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
+	console.log(pageProps);
 	return (
 		<DataContextProvider>
 			<Nav />

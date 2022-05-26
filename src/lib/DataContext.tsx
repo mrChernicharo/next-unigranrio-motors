@@ -5,9 +5,10 @@ import {
 	ReactNode,
 	SetStateAction,
 	useContext,
+	useEffect,
 	useState,
 } from 'react';
-import { CompleteTransaction } from './helpers';
+import { CompleteTransaction, DBData } from './helpers';
 
 export interface IDataContext {
 	clients: Client[];
@@ -46,6 +47,18 @@ export const DataContextProvider = ({
 		transactions,
 		setTransactions,
 	};
+
+	useEffect(() => {
+		fetch('/api/data')
+			.then(res => res.json())
+			.then((data: DBData) => {
+				const { clients, motorcycles, completeTransactions } = data;
+
+				setClients(clients);
+				setMotorcycles(motorcycles);
+				setTransactions(completeTransactions);
+			});
+	}, []);
 
 	return (
 		<DataContext.Provider value={context}>{children}</DataContext.Provider>

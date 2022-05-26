@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import { FiEdit, FiTrash, FiX } from 'react-icons/fi';

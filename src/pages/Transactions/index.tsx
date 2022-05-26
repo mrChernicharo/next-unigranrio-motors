@@ -7,6 +7,7 @@ import { CompleteTransaction } from '../../lib/helpers';
 
 const TransactionsPage = () => {
 	const { transactions } = useContext(DataContext);
+	console.log({ transactions });
 
 	// prettier-ignore
 	const [shownTransactions, setShownTransactions] = useState<CompleteTransaction[]>([...transactions]);

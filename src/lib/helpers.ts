@@ -16,6 +16,13 @@ export interface CompleteTransaction {
 	createdAt: string;
 }
 
+export type DBData = {
+	clients: Client[];
+	motorcycles: Motorcycle[];
+	transactions: Transaction[];
+	completeTransactions: CompleteTransaction[];
+};
+
 export const getTransactionMotos = (
 	clients: Client[],
 	motorcycles: Motorcycle[],

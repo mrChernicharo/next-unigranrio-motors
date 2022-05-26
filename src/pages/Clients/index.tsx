@@ -5,7 +5,7 @@ import { DataContext } from '../../lib/DataContext';
 
 const Clients = () => {
 	const { clients } = useContext(DataContext);
-	console.log(clients);
+	console.log({ clients });
 
 	return (
 		<div className="page-container">
