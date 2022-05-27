@@ -22,18 +22,18 @@ export interface IDataContext {
 	transactions: CompleteTransaction[];
 
 	setClients: Dispatch<SetStateAction<Client[]>>;
-	createClient: (clientData: Client) => void;
-	updateClient: (clientData: Client) => void;
+	createClient: (clientData: Partial<Client>) => void;
+	updateClient: (clientData: Partial<Client>) => void;
 	deleteClient: (id: number) => void;
 
 	setMotorcycles: Dispatch<SetStateAction<Motorcycle[]>>;
-	createMotorcycle: (motorcycleData: Motorcycle) => void;
-	updateMotorcycle: (motorcycleData: Motorcycle) => void;
+	createMotorcycle: (motorcycleData: Partial<Motorcycle>) => void;
+	updateMotorcycle: (motorcycleData: Partial<Motorcycle>) => void;
 	deleteMotorcycle: (id: number) => void;
 
 	setTransactions: Dispatch<SetStateAction<CompleteTransaction[]>>;
-	createTransaction: (TransactionData: CompleteTransaction) => void;
-	updateTransaction: (TransactionData: CompleteTransaction) => void;
+	createTransaction: (TransactionData: Partial<CompleteTransaction>) => void;
+	updateTransaction: (TransactionData: Partial<CompleteTransaction>) => void;
 	deleteTransaction: (id: number) => void;
 }
 
@@ -66,12 +66,13 @@ export const DataContextProvider = ({
 	const [motorcycles, setMotorcycles] = useState<Motorcycle[]>([]);
 	const [transactions, setTransactions] = useState<CompleteTransaction[]>([]);
 
-	const createClient = async (clientData: Client) => {
+	const createClient = async (clientData: Partial<Client>) => {
 		console.log(clientData);
 		const res = await postCreateClient(clientData);
+		console.log(clientData, res);
 		setClients([...clients, res]);
 	};
-	const updateClient = async (clientData: Client) => {
+	const updateClient = async (clientData: Partial<Client>) => {
 		console.log(clientData);
 		const res = await postUpdateClient(clientData);
 		setClients(clients.map(c => (c.id === clientData.id ? res : c)));

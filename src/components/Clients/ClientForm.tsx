@@ -1,6 +1,8 @@
 import { Client } from '@prisma/client';
 import { Form, Formik, FormikProps } from 'formik';
 import { nanoid } from 'nanoid';
+import { useContext } from 'react';
+import { DataContext } from '../../contexts/DataContext';
 import { clientSchema } from '../../lib/schemas';
 import TextField from '../shared/TextField';
 
@@ -14,7 +16,7 @@ export default function CreateClientForm({
 	onSubmitted,
 	client,
 }: ClientFormProps) {
-	// const { createClient, updateClient } = Global;
+	const { createClient, updateClient } = useContext(DataContext);
 
 	let clientID = 0;
 	if (mode === 'edit' && client) clientID = client.id;
@@ -33,8 +35,9 @@ export default function CreateClientForm({
 				onSubmit={(values, actions) => {
 					console.log({ values, actions });
 
-					// if (mode === 'create') createClient(values);
-					// if (mode === 'edit') updateClient({ ...values, id: clientID });
+					if (mode === 'create') createClient(values);
+					if (mode === 'edit')
+						updateClient({ ...values, id: clientID });
 
 					onSubmitted();
 				}}

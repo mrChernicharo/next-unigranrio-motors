@@ -23,6 +23,79 @@ export type DBData = {
 	completeTransactions: CompleteTransaction[];
 };
 
+export const capitalize = (str: string) =>
+	`${str[0].toUpperCase()}${str.substring(1)}`;
+
+export const toCurrency = (num: number) =>
+	'R$' + num.toLocaleString('pt-BR') + ',00';
+
+// prettier-ignore
+export const toDate = (str: string | Date) =>
+	`${new Date(str).toLocaleDateString('pt-BR')} às ${new Date(str).toLocaleTimeString('pt-BR')}`;
+
+export const getClientById = (clients: Client[], id: number) => {
+	return clients.find(client => client.id === id);
+};
+
+export const getMotoById = (motorcycles: Motorcycle[], id: number) => {
+	return motorcycles.find(moto => moto.id === id);
+};
+
+async function apiPost<T, K>(url: string, data: T): Promise<K> {
+	const response = await fetch(url, {
+		method: 'POST',
+		body: JSON.stringify(data),
+		headers: [['content-type', 'application/json']],
+	});
+
+	const result: K = await response.json();
+	return result;
+}
+
+export async function postCreateClient(clientData: Partial<Client>) {
+	const res: Client = await apiPost('api/createClient', { clientData });
+	return res;
+}
+
+export async function postUpdateClient(clientData: Partial<Client>) {
+	const res: Client = await apiPost('api/updateClient', { clientData });
+	return res;
+}
+
+export async function postDeleteClient(clientId: number) {
+	const res = await apiPost('api/deleteClient', { clientId });
+	return res;
+}
+
+export async function postCreateMotorcycle(motorcycleData: Motorcycle) {
+	const res = await apiPost('api/createMotorcycle', { motorcycleData });
+	return res;
+}
+
+export async function postUpdateMotorcycle(motorcycleData: Motorcycle) {
+	const res = await apiPost('api/updateMotorcycle', { motorcycleData });
+	return res;
+}
+
+export async function postDeleteMotorcycle(motorcycleId: number) {
+	const res = await apiPost('api/deleteMotorcycle', { motorcycleId });
+	return res;
+}
+export async function postCreateTransaction(transactionData: Transaction) {
+	const res = await apiPost('api/createTransaction', { transactionData });
+	return res;
+}
+
+export async function postUpdateTransaction(transactionData: Transaction) {
+	const res = await apiPost('api/updateTransaction', { transactionData });
+	return res;
+}
+
+export async function postDeleteTransaction(TransactionId: number) {
+	const res = await apiPost('api/deleteTransaction', { TransactionId });
+	return res;
+}
+
 export const getTransactionMotos = (
 	clients: Client[],
 	motorcycles: Motorcycle[],
@@ -80,76 +153,3 @@ export const getTransactionMotos = (
 
 	return completeTransactions;
 };
-
-export const capitalize = (str: string) =>
-	`${str[0].toUpperCase()}${str.substring(1)}`;
-
-export const toCurrency = (num: number) =>
-	'R$' + num.toLocaleString('pt-BR') + ',00';
-
-// prettier-ignore
-export const toDate = (str: string | Date) =>
-	`${new Date(str).toLocaleDateString('pt-BR')} às ${new Date(str).toLocaleTimeString('pt-BR')}`;
-
-export const getClientById = (clients: Client[], id: number) => {
-	return clients.find(client => client.id === id);
-};
-
-export const getMotoById = (motorcycles: Motorcycle[], id: number) => {
-	return motorcycles.find(moto => moto.id === id);
-};
-
-async function apiPost<T>(url: string, data: T) {
-	const response = await fetch(url, {
-		method: 'POST',
-		body: JSON.stringify(data),
-		headers: [['content-type', 'application/json']],
-	});
-
-	const result: T = await response.json();
-	return result;
-}
-
-export async function postCreateClient(clientData: Client) {
-	const res = await apiPost('api/createClient', clientData);
-	return res;
-}
-
-export async function postUpdateClient(clientData: Client) {
-	const res = await apiPost('api/updateClient', clientData);
-	return res;
-}
-
-export async function postDeleteClient(clientId: number) {
-	const res = await apiPost('api/deleteClient', clientId);
-	return res;
-}
-
-export async function postCreateMotorcycle(motorcycleData: Motorcycle) {
-	const res = await apiPost('api/createMotorcycle', motorcycleData);
-	return res;
-}
-
-export async function postUpdateMotorcycle(motorcycleData: Motorcycle) {
-	const res = await apiPost('api/updateMotorcycle', motorcycleData);
-	return res;
-}
-
-export async function postDeleteMotorcycle(motorcycleId: number) {
-	const res = await apiPost('api/deleteMotorcycle', motorcycleId);
-	return res;
-}
-export async function postCreateTransaction(transactionData: Transaction) {
-	const res = await apiPost('api/createTransaction', transactionData);
-	return res;
-}
-
-export async function postUpdateTransaction(transactionData: Transaction) {
-	const res = await apiPost('api/updateTransaction', transactionData);
-	return res;
-}
-
-export async function postDeleteTransaction(TransactionId: number) {
-	const res = await apiPost('api/deleteTransaction', TransactionId);
-	return res;
-}
