@@ -24,11 +24,7 @@ const Index = ({
 	const { setClients, setMotorcycles, setTransactions } =
 		useContext(DataContext);
 
-	return (
-		<div className="main">
-			<Home />
-		</div>
-	);
+	return <Home />;
 };
 
 export const getStaticProps: GetStaticProps = async ctx => {

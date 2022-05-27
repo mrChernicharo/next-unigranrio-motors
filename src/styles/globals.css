@@ -43,7 +43,6 @@ body {
 
 	color: var(--text-color);
 	padding-top: 1rem;
-	border: 1px solid blue;
 	font-size: calc(8px + 2vmin);
 }
 
@@ -129,7 +128,7 @@ select ::placeholder {
 }
 
 .banner {
-	background: url('/src/assets/banner-min-min.jpg') no-repeat fixed center;
+	background: url('/banner-min.jpg') no-repeat fixed center;
 
 	width: 100vw;
 	height: 600px;
