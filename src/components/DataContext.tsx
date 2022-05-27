@@ -8,7 +8,7 @@ import {
 	useEffect,
 	useState,
 } from 'react';
-import { CompleteTransaction, DBData } from './helpers';
+import { CompleteTransaction, DBData } from '../lib/helpers';
 
 export interface IDataContext {
 	clients: Client[];

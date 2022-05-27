@@ -21,6 +21,17 @@
 	margin-inline: 0.25rem;
 }
 
+.nav-link {
+	color: #fff;
+	cursor: pointer;
+}
+.nav-link.active {
+	color: var(--accent);
+}
+
+/****************************/
+/******** text-field ********/
+/****************************/
 .text-field-container {
 	display: flex;
 	flex-direction: column;
@@ -141,7 +152,7 @@
 	bottom: 2rem;
 	right: 2rem;
 }
-.new-form-container .close {
+.new-form-container {
 	padding: 2rem;
 	border-radius: 8px;
 	background: #282c34;

@@ -51,18 +51,8 @@ body {
 	box-sizing: border-box;
 }
 
-ul {
-	padding: 0;
-	margin: 0;
-	list-style: none;
-}
-
-.nav-link {
-	color: #fff;
-	cursor: pointer;
-}
-.nav-link.active {
-	color: var(--accent);
+h1 {
+	padding-left: 2rem;
 }
 
 p {
@@ -71,6 +61,12 @@ p {
 }
 p.bold {
 	font-weight: 600;
+}
+
+ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
 }
 
 table {
@@ -129,6 +125,7 @@ select ::placeholder {
 
 .page-container {
 	margin: 0 auto;
+	padding-top: 1rem;
 }
 
 .banner {

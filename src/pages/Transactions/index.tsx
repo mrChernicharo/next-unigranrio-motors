@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { DataContext } from '../../components/DataContext';
 import CreateTransaction from '../../components/Transactions/CreateTransaction';
 import TransactionList from '../../components/Transactions/TransactionsList';
 import TransactionsSearch from '../../components/Transactions/TransactionsSearch';
-import { DataContext } from '../../lib/DataContext';
 import { CompleteTransaction } from '../../lib/helpers';
 
 const TransactionsPage = () => {

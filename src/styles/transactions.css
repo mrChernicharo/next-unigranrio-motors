@@ -53,7 +53,6 @@
 }
 
 .transaction-container {
-	/********** // border: 1px solid; *************/
 	padding: 2rem 1rem;
 }
 
@@ -62,7 +61,7 @@
 }
 
 li.transaction-li {
-	/********** // border: 1px solid; *************/
+	/* border: 1px solid;*/
 	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px #31363f;
 	border-radius: 12px;
 	padding: 0.5rem 1.5rem;
@@ -70,7 +69,7 @@ li.transaction-li {
 }
 
 li.transaction-li .moto-details {
-	/********** // border: 1px solid; *************/
+	/* border: 1px solid;*/
 	display: flex;
 	justify-content: space-between;
 }
