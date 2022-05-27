@@ -2,9 +2,9 @@ import { Transaction } from '@prisma/client';
 import { FieldArray, Form, Formik, FormikProps } from 'formik';
 import { useContext } from 'react';
 import { FiPlus } from 'react-icons/fi';
+import { DataContext } from '../../contexts/DataContext';
 import { CompleteTransaction } from '../../lib/helpers';
 import { transactionSchema } from '../../lib/schemas';
-import { DataContext } from '../DataContext';
 import DropdownField, { IDropdownOption } from '../shared/DropdownField';
 
 interface IProps {

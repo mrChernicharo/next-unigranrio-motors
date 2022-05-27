@@ -1,8 +1,8 @@
 import { Client, Motorcycle, Transaction } from '@prisma/client';
 import type { GetStaticProps } from 'next';
 import { useContext } from 'react';
-import { DataContext } from '../components/DataContext';
 import Home from '../components/Home';
+import { DataContext } from '../contexts/DataContext';
 import { CompleteTransaction, getTransactionMotos } from '../lib/helpers';
 import { prismaClient } from '../lib/prismaClient';
 

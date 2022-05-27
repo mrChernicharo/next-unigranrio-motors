@@ -1,8 +1,8 @@
 import { Client } from '@prisma/client';
 import { useContext, useState } from 'react';
 import { FiEdit, FiTrash, FiX } from 'react-icons/fi';
+import { DataContext } from '../../contexts/DataContext';
 import { capitalize, toCurrency, toDate } from '../../lib/helpers';
-import { DataContext } from '../DataContext';
 import DetailsModal from '../shared/DetailsModal';
 import ClientForm from './ClientForm';
 

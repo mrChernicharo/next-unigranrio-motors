@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import * as React from 'react';
 
-const bannerPath = '/banner-min.jpg';
+const bannerPath = '/banner-min-min.jpg';
 
 const Home = () => {
 	return (

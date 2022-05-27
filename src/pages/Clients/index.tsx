@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import ClientsList from '../../components/Clients/ClientsList';
 import CreateClient from '../../components/Clients/CreateClient';
-import { DataContext } from '../../components/DataContext';
+import { DataContext } from '../../contexts/DataContext';
 
 const Clients = () => {
 	const { clients } = useContext(DataContext);
