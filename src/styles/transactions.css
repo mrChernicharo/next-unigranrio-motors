@@ -1,0 +1,91 @@
+/********** transactions *************/
+.transactions-page-container {
+	padding-top: 4rem;
+}
+
+.search-input-container {
+	border: 1px solid;
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100vw;
+	background-color: var(--bg);
+	z-index: 1;
+}
+
+.search-input {
+	position: fixed;
+	top: 64px;
+	left: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #fff;
+	border-radius: 06px;
+	width: 400px;
+	margin: 0 auto;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px #31363f;
+	transition: 0.7s;
+}
+
+.search-input .search-input-icon {
+	position: relative;
+	color: var(--bg);
+	display: flex;
+}
+
+.search-input input {
+	background-color: transparent;
+	border: none;
+	width: 100%;
+	height: 32px;
+}
+
+.transaction-item {
+	background-color: rgb(60, 64, 76);
+}
+
+.form-row {
+	display: flex;
+}
+
+.transaction-container {
+	/********** // border: 1px solid; *************/
+	padding: 2rem 1rem;
+}
+
+.transaction-container .transaction-itens-ul li p {
+	text-align: right;
+}
+
+li.transaction-li {
+	/********** // border: 1px solid; *************/
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px #31363f;
+	border-radius: 12px;
+	padding: 0.5rem 1.5rem;
+	margin-bottom: 1rem;
+}
+
+li.transaction-li .moto-details {
+	/********** // border: 1px solid; *************/
+	display: flex;
+	justify-content: space-between;
+}
+li.transaction-li img.transaction-img {
+	height: 60px;
+}
+
+@media screen and(max-width: 720px) {
+	.search-input {
+		left: 12px;
+	}
+}
+
+@media screen and(max-width: 450px) {
+	.search-input {
+		left: 0px;
+	}
+}

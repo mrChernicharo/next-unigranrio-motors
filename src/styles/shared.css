@@ -1,0 +1,115 @@
+/********** nav *************/
+
+.nav-container {
+	width: 100vw;
+	padding: 0.5rem;
+	/* height: 38px; */
+	position: fixed;
+	background: var(--dark-bg);
+	top: 0;
+	display: flex;
+	justify-content: space-between;
+	z-index: 2;
+}
+
+.nav-container > span {
+	display: flex;
+}
+
+.nav-container > span > span {
+	margin-inline: 0.25rem;
+}
+
+.text-field-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.text-field-container label {
+	font-size: var(--normal-text);
+}
+
+.text-field-container input {
+	border-radius: 4px;
+}
+
+.error-message {
+	font-size: var(--small-text);
+	color: var(--accent);
+}
+
+.number-field-container {
+	display: flex;
+	flex-direction: column;
+	width: 40px;
+}
+
+/********** slide toggle *************/
+.slide-toggle-container .switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+/* The slider */
+.slide-toggle-container .slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
+}
+
+.slide-toggle-container .slider:before {
+	position: absolute;
+	content: '';
+	height: var(--toggle-thumb-diameter);
+	width: var(--toggle-thumb-diameter);
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
+}
+
+.slide-toggle-container input:checked + .slider {
+	background-color: var(--primary);
+}
+
+.slide-toggle-container input:focus + .slider {
+	box-shadow: 0 0 1px var(--primary);
+}
+
+.slide-toggle-container input:checked + .slider:before {
+	-webkit-transform: translateX(26px);
+	-ms-transform: translateX(26px);
+	transform: translateX(26px);
+}
+
+.slide-toggle-container .slider.round {
+	/* Rounded sliders*/
+	border-radius: 34px;
+}
+
+.slide-toggle-container .slider.round:before {
+	border-radius: 50%;
+}
+
+/********** select *************/
+.select-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.select-container label {
+	font-size: var(--normal-text);
+}
+
+.select-container .dropdown-select {
+	/* background-color: red;*/
+	display: flex;
+}

@@ -48,12 +48,12 @@ export const DataContextProvider = ({
 		setTransactions,
 	};
 
+	//fetch initial data
 	useEffect(() => {
 		fetch('/api/data')
 			.then(res => res.json())
 			.then((data: DBData) => {
 				const { clients, motorcycles, completeTransactions } = data;
-
 				setClients(clients);
 				setMotorcycles(motorcycles);
 				setTransactions(completeTransactions);

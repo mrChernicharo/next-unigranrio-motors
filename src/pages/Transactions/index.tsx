@@ -41,7 +41,7 @@ const TransactionsPage = () => {
 	}, [searchTerm, transactions]);
 
 	return (
-		<div className="page-container">
+		<div className="transactions-page-container">
 			<h1>Vendas</h1>
 			<div className="search-input-container">
 				<TransactionsSearch onChange={handleSearchChange} />
