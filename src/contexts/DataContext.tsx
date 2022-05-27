@@ -17,6 +17,8 @@ import {
 } from '../lib/helpers';
 
 export interface IDataContext {
+	isLoading: boolean;
+
 	clients: Client[];
 	motorcycles: Motorcycle[];
 	transactions: CompleteTransaction[];
@@ -42,6 +44,7 @@ export interface IDataContextProviderProps {
 }
 
 export const DataContext = createContext<IDataContext>({
+	isLoading: true,
 	clients: [],
 	motorcycles: [],
 	transactions: [],
@@ -65,21 +68,26 @@ export const DataContextProvider = ({
 	const [clients, setClients] = useState<Client[]>([]);
 	const [motorcycles, setMotorcycles] = useState<Motorcycle[]>([]);
 	const [transactions, setTransactions] = useState<CompleteTransaction[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const createClient = async (clientData: Partial<Client>) => {
-		console.log(clientData);
+		setIsLoading(true);
 		const res = await postCreateClient(clientData);
-		console.log(clientData, res);
+		setIsLoading(false);
 		setClients([...clients, res]);
 	};
 	const updateClient = async (clientData: Partial<Client>) => {
-		console.log(clientData);
+		setIsLoading(true);
 		const res = await postUpdateClient(clientData);
+		setIsLoading(false);
+
 		setClients(clients.map(c => (c.id === clientData.id ? res : c)));
 	};
 	const deleteClient = async (clientId: number) => {
-		console.log(clientId);
+		setIsLoading(true);
 		const res = await postDeleteClient(clientId);
+		setIsLoading(false);
+
 		setClients(clients.filter(c => c.id !== clientId));
 	};
 	const createMotorcycle = () => {};
@@ -90,6 +98,8 @@ export const DataContextProvider = ({
 	const deleteTransaction = () => {};
 
 	const context: IDataContext = {
+		isLoading,
+
 		clients,
 		motorcycles,
 		transactions,
@@ -119,6 +129,8 @@ export const DataContextProvider = ({
 				setClients(clients);
 				setMotorcycles(motorcycles);
 				setTransactions(completeTransactions);
+				console.log('andale!');
+				setIsLoading(false);
 			});
 	}, []);
 

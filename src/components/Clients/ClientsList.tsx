@@ -1,5 +1,6 @@
 import { Client } from '@prisma/client';
-import * as React from 'react';
+import React, { useContext } from 'react';
+import { DataContext } from '../../contexts/DataContext';
 import ClientItem from './ClientItem';
 
 interface ClientsListProps {
@@ -7,11 +8,10 @@ interface ClientsListProps {
 }
 
 export default function ClientsList({ clients }: ClientsListProps) {
-	// const { deleteClient } = Global;
+	const { deleteClient } = useContext(DataContext);
 
 	const handleDeleteClient = (id: number) => {
-		// deleteClient(id);
-		console.log(`delete id ${id}`);
+		deleteClient(id);
 	};
 
 	return (

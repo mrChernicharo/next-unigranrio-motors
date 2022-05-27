@@ -1,20 +1,34 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import ClientsList from '../../components/Clients/ClientsList';
 import CreateClient from '../../components/Clients/CreateClient';
 import { DataContext } from '../../contexts/DataContext';
 
 const Clients = () => {
-	const { clients } = useContext(DataContext);
+	const { isLoading, clients } = useContext(DataContext);
 	console.log({ clients });
 
+	useEffect(() => {
+		console.log(isLoading);
+	}, [isLoading]);
+
 	return (
-		<div className="page-container">
-			<h1>Clientes</h1>
+		<>
+			{isLoading ? (
+				<div className="page-container">
+					<h1>Clientes</h1>
 
-			<ClientsList clients={clients} />
+					<div>Loading...</div>
+				</div>
+			) : (
+				<div className="page-container">
+					<h1>Clientes</h1>
 
-			<CreateClient />
-		</div>
+					<ClientsList clients={clients} />
+
+					<CreateClient />
+				</div>
+			)}
+		</>
 	);
 };
 

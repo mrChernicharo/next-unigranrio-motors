@@ -129,7 +129,7 @@ select ::placeholder {
 }
 
 .banner {
-	background: url('/src/assets/banner.jpg') no-repeat fixed center;
+	background: url('/src/assets/banner-min-min.jpg') no-repeat fixed center;
 
 	width: 100vw;
 	height: 600px;

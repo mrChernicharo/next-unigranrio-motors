@@ -27,8 +27,6 @@ const Index = ({
 	return (
 		<div className="main">
 			<Home />
-			{/* <Router /> */}
-			{/* <pre>{JSON.stringify(completeTransactions, null, 2)}</pre> */}
 		</div>
 	);
 };
