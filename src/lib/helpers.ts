@@ -161,8 +161,8 @@ export async function postUpdateTransaction(postData: FormTransaction) {
 	return res;
 }
 
-export async function postDeleteTransaction(TransactionId: number) {
-	const res = await apiPost('api/transaction/delete', { TransactionId });
+export async function postDeleteTransaction(transactionId: number) {
+	const res = await apiPost('api/transaction/delete', { transactionId });
 	return res;
 }
 

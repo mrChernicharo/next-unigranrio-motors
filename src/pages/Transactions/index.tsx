@@ -6,8 +6,7 @@ import { DataContext } from '../../contexts/DataContext';
 import { CompleteTransaction } from '../../lib/helpers';
 
 const TransactionsPage = () => {
-	const { transactions } = useContext(DataContext);
-	console.log({ transactions });
+	const { transactions, isLoading } = useContext(DataContext);
 
 	// prettier-ignore
 	const [shownTransactions, setShownTransactions] = useState<CompleteTransaction[]>([...transactions]);
@@ -50,6 +49,8 @@ const TransactionsPage = () => {
 			<TransactionList transactions={shownTransactions} />
 
 			<CreateTransaction />
+
+			{isLoading && <div>Loading....</div>}
 		</div>
 	);
 };
