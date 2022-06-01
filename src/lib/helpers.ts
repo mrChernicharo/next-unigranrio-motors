@@ -59,47 +59,88 @@ async function apiPost<T, K>(url: string, data: T): Promise<K> {
 	return result;
 }
 
+// *************//
+//	  CLIENTS   //
+// *************//
+
 export async function postCreateClient(clientData: Partial<Client>) {
-	const res: Client = await apiPost('api/createClient', { clientData });
+	const res: Client = await apiPost('api/client/create', { clientData });
 	return res;
 }
 
 export async function postUpdateClient(clientData: Partial<Client>) {
-	const res: Client = await apiPost('api/updateClient', { clientData });
+	const res: Client = await apiPost('api/client/update', { clientData });
 	return res;
 }
 
 export async function postDeleteClient(clientId: number) {
-	const res = await apiPost('api/deleteClient', { clientId });
+	const res = await apiPost('api/client/delete', { clientId });
 	return res;
 }
 
-export async function postCreateMotorcycle(motorcycleData: Motorcycle) {
-	const res = await apiPost('api/createMotorcycle', { motorcycleData });
+// **************//
+//  MOTORCYCLES  //
+// **************//
+
+export async function postCreateMotorcycle(postData: Partial<Motorcycle>) {
+	const { name, year, price, description, imgURL } = postData;
+	const motorcycleData = {
+		name,
+		description,
+		price: Number(price),
+		year: Number(year),
+		imgURL,
+	};
+	const res: Motorcycle = await apiPost('api/motorcycle/create', {
+		motorcycleData,
+	});
 	return res;
 }
 
-export async function postUpdateMotorcycle(motorcycleData: Motorcycle) {
-	const res = await apiPost('api/updateMotorcycle', { motorcycleData });
+export async function postUpdateMotorcycle(postData: Partial<Motorcycle>) {
+	const { id, name, year, price, description, imgURL } = postData;
+	const motorcycleData = {
+		id,
+		name,
+		description,
+		price: Number(price),
+		year: Number(year),
+		imgURL,
+	};
+	const res: Motorcycle = await apiPost('api/motorcycle/update', {
+		motorcycleData,
+	});
 	return res;
 }
 
 export async function postDeleteMotorcycle(motorcycleId: number) {
-	const res = await apiPost('api/deleteMotorcycle', { motorcycleId });
+	const res = await apiPost('api/motorcycle/delete', { motorcycleId });
 	return res;
 }
-export async function postCreateTransaction(transactionData: Transaction) {
-	const res = await apiPost('api/createTransaction', { transactionData });
+export async function postCreateTransaction(
+	transactionData: Partial<Transaction>
+) {
+	const res: CompleteTransaction = await apiPost('api/transaction/create', {
+		transactionData,
+	});
 	return res;
 }
 
-export async function postUpdateTransaction(transactionData: Transaction) {
-	const res = await apiPost('api/updateTransaction', { transactionData });
+// *************//
+// TRANSACTIONS //
+// *************//
+
+export async function postUpdateTransaction(
+	transactionData: Partial<Transaction>
+) {
+	const res: CompleteTransaction = await apiPost('api/transaction/update', {
+		transactionData,
+	});
 	return res;
 }
 
 export async function postDeleteTransaction(TransactionId: number) {
-	const res = await apiPost('api/deleteTransaction', { TransactionId });
+	const res = await apiPost('api/transaction/delete', { TransactionId });
 	return res;
 }
 

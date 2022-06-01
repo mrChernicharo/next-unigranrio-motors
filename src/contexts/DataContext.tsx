@@ -13,8 +13,11 @@ import {
 	DBData,
 	FormTransaction,
 	postCreateClient,
+	postCreateMotorcycle,
 	postDeleteClient,
+	postDeleteMotorcycle,
 	postUpdateClient,
+	postUpdateMotorcycle,
 } from '../lib/helpers';
 
 export interface IDataContext {
@@ -77,6 +80,8 @@ export const DataContextProvider = ({
 		cb().then(() => setIsLoading(false));
 	};
 
+	// ******** clients ********** //
+
 	const createClient = async (clientData: Partial<Client>) => {
 		withLoader(async () => {
 			const res = await postCreateClient(clientData);
@@ -97,27 +102,45 @@ export const DataContextProvider = ({
 			setClients(clients.filter(c => c.id !== clientId));
 		});
 	};
-	const createMotorcycle = async () => {
-		withLoader(async () => {});
-	};
-	const updateMotorcycle = async () => {
-		withLoader(async () => {});
-	};
-	const deleteMotorcycle = async () => {
-		withLoader(async () => {});
-	};
-	const createTransaction = async (transactionData: FormTransaction) => {
+
+	// ******** motorcycles ********** //
+
+	const createMotorcycle = async (postData: Partial<Motorcycle>) => {
 		withLoader(async () => {
-			console.log({ transactionData });
+			const res = await postCreateMotorcycle(postData);
+			setMotorcycles([...motorcycles, res]);
 		});
 	};
-	const updateTransaction = async (transactionData: FormTransaction) => {
+	const updateMotorcycle = async (postData: Partial<Motorcycle>) => {
 		withLoader(async () => {
-			console.log({ transactionData });
+			const res = await postUpdateMotorcycle(postData);
+			setMotorcycles(motorcycles.map(m => (m.id === res.id ? res : m)));
 		});
 	};
-	const deleteTransaction = async () => {
-		withLoader(async () => {});
+	const deleteMotorcycle = async (motoId: number) => {
+		withLoader(async () => {
+			console.log({ motoId });
+			const res = await postDeleteMotorcycle(motoId);
+			setMotorcycles(motorcycles.filter(moto => moto.id !== motoId));
+		});
+	};
+
+	// ******** transactions ********** //
+
+	const createTransaction = async (postData: FormTransaction) => {
+		withLoader(async () => {
+			console.log({ postData });
+		});
+	};
+	const updateTransaction = async (postData: FormTransaction) => {
+		withLoader(async () => {
+			console.log({ postData });
+		});
+	};
+	const deleteTransaction = async (transactionId: number) => {
+		withLoader(async () => {
+			console.log({ transactionId });
+		});
 	};
 
 	const context: IDataContext = {
@@ -145,7 +168,7 @@ export const DataContextProvider = ({
 
 	//fetch initial data
 	useEffect(() => {
-		fetch('/api/data')
+		fetch('/api/fetchData')
 			.then(res => res.json())
 			.then((data: DBData) => {
 				const { clients, motorcycles, completeTransactions } = data;

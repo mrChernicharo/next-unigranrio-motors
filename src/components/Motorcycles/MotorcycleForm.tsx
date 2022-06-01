@@ -1,6 +1,8 @@
 import { Motorcycle } from '@prisma/client';
 import { Form, Formik, FormikProps } from 'formik';
 import { nanoid } from 'nanoid';
+import { useContext } from 'react';
+import { DataContext } from '../../contexts/DataContext';
 import { defaultMotoImgURL } from '../../lib/constants';
 import { motorcycleSchema } from '../../lib/schemas';
 import TextField from '../shared/TextField';
@@ -10,7 +12,7 @@ interface MotorcyclesFormProps {
 }
 
 export default function MotorcycleForm({ motorcycle }: MotorcyclesFormProps) {
-	// const { createMotorcycle, updateMotorcycle } = Global;
+	const { createMotorcycle, updateMotorcycle } = useContext(DataContext);
 
 	let motoId = 0;
 	if (motorcycle) motoId = motorcycle.id;
@@ -32,8 +34,8 @@ export default function MotorcycleForm({ motorcycle }: MotorcyclesFormProps) {
 				onSubmit={(values, actions) => {
 					console.log({ values, actions });
 
-					// if (motoId) updateMotorcycle({ ...values, id: motoId });
-					// if (!motoId) createMotorcycle(values);
+					if (motoId) updateMotorcycle({ ...values, id: motoId });
+					if (!motoId) createMotorcycle(values);
 				}}
 			>
 				{({ errors, touched, values }: FormikProps<Partial<Motorcycle>>) => { 
