@@ -134,25 +134,31 @@ export async function postCreateTransaction(postData: FormTransaction) {
 		motorcycles: motosStr,
 	};
 
-	console.log({ transactionData });
-
 	const res: Transaction = await apiPost('api/transaction/create', {
 		transactionData,
 	});
 
 	return res;
-
-	// const completeData: CompleteTransaction = {
-
-	// }
-	// return completeData;
 }
 
 export async function postUpdateTransaction(postData: FormTransaction) {
-	// const res: CompleteTransaction = await apiPost('api/transaction/update', {
-	// 	transactionData,
-	// });
-	// return res;
+	console.log({ postData });
+	const { id, clientId, motorcycles } = postData;
+
+	const motosStr = motorcycles.map(m => `${m.id}:${m.quantity}`).join(',');
+
+	const transactionData: Partial<Transaction> = {
+		id,
+		clientId: Number(clientId),
+		createdAt: new Date().toISOString(),
+		motorcycles: motosStr,
+	};
+
+	const res: Transaction = await apiPost('api/transaction/update', {
+		transactionData,
+	});
+
+	return res;
 }
 
 export async function postDeleteTransaction(TransactionId: number) {

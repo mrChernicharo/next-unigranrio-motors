@@ -32,12 +32,12 @@ export default function CreateClientForm({
 					email: client?.email || '',
 				}}
 				validationSchema={clientSchema}
-				onSubmit={(values, actions) => {
+				onSubmit={async (values, actions) => {
 					console.log({ values, actions });
 
-					if (mode === 'create') createClient(values);
+					if (mode === 'create') await createClient(values);
 					if (mode === 'edit')
-						updateClient({ ...values, id: clientID });
+						await updateClient({ ...values, id: clientID });
 
 					onSubmitted();
 				}}

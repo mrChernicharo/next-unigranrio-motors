@@ -34,19 +34,19 @@ export interface IDataContext {
 	transactions: CompleteTransaction[];
 
 	setClients: Dispatch<SetStateAction<Client[]>>;
-	createClient: (clientData: Partial<Client>) => void;
-	updateClient: (clientData: Partial<Client>) => void;
-	deleteClient: (id: number) => void;
+	createClient: (clientData: Partial<Client>) => Promise<void>;
+	updateClient: (clientData: Partial<Client>) => Promise<void>;
+	deleteClient: (id: number) => Promise<void>;
 
 	setMotorcycles: Dispatch<SetStateAction<Motorcycle[]>>;
-	createMotorcycle: (motorcycleData: Partial<Motorcycle>) => void;
-	updateMotorcycle: (motorcycleData: Partial<Motorcycle>) => void;
-	deleteMotorcycle: (id: number) => void;
+	createMotorcycle: (motorcycleData: Partial<Motorcycle>) => Promise<void>;
+	updateMotorcycle: (motorcycleData: Partial<Motorcycle>) => Promise<void>;
+	deleteMotorcycle: (id: number) => Promise<void>;
 
 	setTransactions: Dispatch<SetStateAction<CompleteTransaction[]>>;
-	createTransaction: (TransactionData: FormTransaction) => void;
-	updateTransaction: (TransactionData: FormTransaction) => void;
-	deleteTransaction: (id: number) => void;
+	createTransaction: (TransactionData: FormTransaction) => Promise<void>;
+	updateTransaction: (TransactionData: FormTransaction) => Promise<void>;
+	deleteTransaction: (id: number) => Promise<void>;
 }
 
 export interface IDataContextProviderProps {
@@ -61,17 +61,17 @@ export const DataContext = createContext<IDataContext>({
 	motorcycles: [],
 	transactions: [],
 	setClients: () => {},
-	createClient: () => {},
-	updateClient: () => {},
-	deleteClient: () => {},
+	createClient: async () => {},
+	updateClient: async () => {},
+	deleteClient: async () => {},
 	setMotorcycles: () => {},
-	createMotorcycle: () => {},
-	updateMotorcycle: () => {},
-	setTransactions: () => {},
-	deleteMotorcycle: () => {},
-	createTransaction: () => {},
-	updateTransaction: () => {},
-	deleteTransaction: () => {},
+	createMotorcycle: async () => {},
+	updateMotorcycle: async () => {},
+	setTransactions: async () => {},
+	deleteMotorcycle: async () => {},
+	createTransaction: async () => {},
+	updateTransaction: async () => {},
+	deleteTransaction: async () => {},
 });
 
 export const DataContextProvider = ({
@@ -152,10 +152,16 @@ export const DataContextProvider = ({
 		withLoader(async () => {
 			console.log({ postData });
 			const res = await postUpdateTransaction(postData);
-			console.log({ res });
-			// setTransactions(
-			// 	transactions.map(t => (t.id === postData.id ? res : t))
-			// );
+			const completeTransactions = getCompleteTransactions(
+				clients,
+				motorcycles,
+				[res]
+			);
+			setTransactions(
+				transactions.map(t =>
+					t.id === postData.id ? completeTransactions[0] : t
+				)
+			);
 		});
 	};
 	const deleteTransaction = async (transactionId: number) => {

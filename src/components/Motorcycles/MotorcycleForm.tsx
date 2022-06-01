@@ -9,9 +9,13 @@ import TextField from '../shared/TextField';
 
 interface MotorcyclesFormProps {
 	motorcycle?: Motorcycle;
+	onSubmitted: () => void;
 }
 
-export default function MotorcycleForm({ motorcycle }: MotorcyclesFormProps) {
+export default function MotorcycleForm({
+	motorcycle,
+	onSubmitted,
+}: MotorcyclesFormProps) {
 	const { createMotorcycle, updateMotorcycle } = useContext(DataContext);
 
 	let motoId = 0;
@@ -31,11 +35,13 @@ export default function MotorcycleForm({ motorcycle }: MotorcyclesFormProps) {
 					imgURL: motorcycle?.imgURL || defaultMotoImgURL,
 				}}
 				validationSchema={motorcycleSchema}
-				onSubmit={(values, actions) => {
+				onSubmit={async (values, actions) => {
 					console.log({ values, actions });
 
-					if (motoId) updateMotorcycle({ ...values, id: motoId });
-					if (!motoId) createMotorcycle(values);
+					if (motoId) await updateMotorcycle({ ...values, id: motoId });
+					if (!motoId) await createMotorcycle(values);
+
+					onSubmitted()
 				}}
 			>
 				{({ errors, touched, values }: FormikProps<Partial<Motorcycle>>) => { 

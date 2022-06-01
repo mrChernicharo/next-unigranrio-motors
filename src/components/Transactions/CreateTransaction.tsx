@@ -21,12 +21,7 @@ export default function CreateTransaction() {
 			</button>
 
 			{isFormShown && (
-				<TransactionForm
-					onSubmitted={() => {
-						console.log('submitted');
-						// setIsFormShown(false)
-					}}
-				/>
+				<TransactionForm onSubmitted={() => setIsFormShown(false)} />
 			)}
 		</div>
 	);

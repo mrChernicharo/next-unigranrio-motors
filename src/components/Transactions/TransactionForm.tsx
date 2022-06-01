@@ -67,19 +67,17 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 				total: transaction?.total || 0,
 			}}
 			validationSchema={transactionSchema}
-			onSubmit={(values, actions) => {
-				console.log('createTransaction!', { values, actions });
-
+			onSubmit={async (values, actions) => {
 				const { resetForm } = actions;
 
 				transactionID
-					? updateTransaction({
+					? await updateTransaction({
 							id: transactionID,
 							clientId: values.clientId,
 							motorcycles: values.motorcycles,
 							total: getTotal(values.motorcycles),
 					  })
-					: createTransaction({
+					: await createTransaction({
 							clientId: values.clientId,
 							motorcycles: values.motorcycles,
 							total: getTotal(values.motorcycles),
@@ -88,43 +86,45 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 				// resetForm();
 
 				const event = new Event('submit', { bubbles: true });
-				// onSubmitted(event);
+				onSubmitted(event);
 			}}
 		>
-			{
-				/* prettier-ignore */
-				({ errors, values, handleBlur, handleChange }: FormikProps<FormTransaction>) => {
-			console.log({ values });
-			return (
-				<Form>
-					<h5>Cadastrar Venda</h5>
+			{({
+				errors,
+				values,
+				handleBlur,
+				handleChange,
+			}: FormikProps<FormTransaction>) => {
+				return (
+					<Form>
+						<h5>Cadastrar Venda</h5>
 
-					<DropdownField
-						id={nanoid()}
-						name="clientId"
-						label="Cliente"
-						placeholder="Selecione o cliente"
-						options={clientOpts}
-						onChange={handleChange}
-					/>
-					<div className="error-message">{errors.clientId}</div>
-					{values.clientId ? (
-						<FieldArray name="motorcycles">
-							{arrayHelpers => {
-								return (
-									<div className="motorcycles-list">
-										{values?.motorcycles &&
-										values.motorcycles.length > 0 ? (
-											<>
-												{/* prettier-ignore */}
-												{values.motorcycles.map(
-													(moto, i) => (
-														<div
-															key={nanoid()}
-															className="transaction-item"
-														>
-															{/* prettier-ignore */}
-															<div className="form-row">
+						<DropdownField
+							id={nanoid()}
+							name="clientId"
+							label="Cliente"
+							placeholder="Selecione o cliente"
+							options={clientOpts}
+							onChange={handleChange}
+						/>
+						<div className="error-message">{errors.clientId}</div>
+						{values.clientId ? (
+							<FieldArray name="motorcycles">
+								{arrayHelpers => {
+									return (
+										<div className="motorcycles-list">
+											{values?.motorcycles &&
+											values.motorcycles.length > 0 ? (
+												<>
+													{/* prettier-ignore */}
+													{values.motorcycles.map(
+														(moto, i) => (
+															<div
+																key={nanoid()}
+																className="transaction-item"
+															>
+																{/* prettier-ignore */}
+																<div className="form-row">
 																<DropdownField
 																	id={nanoid()}
 																	name={`motorcycles[${i}].id`}
@@ -169,55 +169,54 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 																	</button>
 																</div>
 															</div>
-														</div>
-													)
-												)}
-											</>
-										) : null}
-										<button
-											style={{
-												marginBlock: 10,
-											}}
-											type="button"
-											id="add-moto-btn"
-											onClick={() =>
-												arrayHelpers.push({
-													id: '',
-													quantity: 1,
-												})
-											}
-										>
-											<FiPlus />
-										</button>
-										<label
-											htmlFor="add-moto-btn"
-											style={{
-												paddingLeft: 5,
-												fontSize: '11px',
-												color: 'goldenrod',
-											}}
-										>
-											adicionar moto
-										</label>
-									</div>
-								);
-							}}
-						</FieldArray>
-					) : null}
-					<button type="submit">
-						{transactionID ? 'Editar venda' : 'Registrar venda'}
-					</button>
+															</div>
+														)
+													)}
+												</>
+											) : null}
+											<button
+												style={{
+													marginBlock: 10,
+												}}
+												type="button"
+												id="add-moto-btn"
+												onClick={() =>
+													arrayHelpers.push({
+														id: '',
+														quantity: 1,
+													})
+												}
+											>
+												<FiPlus />
+											</button>
+											<label
+												htmlFor="add-moto-btn"
+												style={{
+													paddingLeft: 5,
+													fontSize: '11px',
+													color: 'goldenrod',
+												}}
+											>
+												adicionar moto
+											</label>
+										</div>
+									);
+								}}
+							</FieldArray>
+						) : null}
+						<button type="submit">
+							{transactionID ? 'Editar venda' : 'Registrar venda'}
+						</button>
 
-					<div>
-						<p>
-							Total:{' '}
-							{toCurrency(getTotal(values.motorcycles))}
-						</p>
-					</div>
-				</Form>
-			);
-				}
-			}
+						<div>
+							<p>
+								Total:{' '}
+								{toCurrency(getTotal(values.motorcycles))}
+							</p>
+						</div>
+					</Form>
+				);
+			}}
 		</Formik>
 	);
 }

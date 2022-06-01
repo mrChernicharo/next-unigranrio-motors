@@ -7,10 +7,10 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<Transaction>
 ) {
-	const { transactionData } = req.body;
+	const { transactionId } = req.body;
 
 	const data = await prismaClient.transaction.delete({
-		where: { id: transactionData.id },
+		where: { id: transactionId },
 	});
 
 	res.status(200).json({ ...data });

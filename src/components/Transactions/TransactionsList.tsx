@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+import { DataContext } from '../../contexts/DataContext';
 import { CompleteTransaction } from '../../lib/helpers';
 import Transaction from './TransactionItem';
 
@@ -6,11 +8,10 @@ interface IProps {
 }
 
 export default function TransactionList({ transactions }: IProps) {
-	// const { deleteTransaction } = Global;
+	const { deleteTransaction } = useContext(DataContext);
 
 	const handleDeleteTransaction = (id: number) => {
-		//  deleteTransaction(id)
-		console.log(`delete id ${id}`);
+		deleteTransaction(id);
 	};
 
 	return (

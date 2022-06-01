@@ -18,7 +18,11 @@ export default function CreateMotorcycle() {
 				{isFormShown ? <FiX /> : <FiPlus />}
 			</button>
 
-			{isFormShown && <CreateMotorcycleForm />}
+			{isFormShown && (
+				<CreateMotorcycleForm
+					onSubmitted={() => setIsFormShown(false)}
+				/>
+			)}
 		</div>
 	);
 }
