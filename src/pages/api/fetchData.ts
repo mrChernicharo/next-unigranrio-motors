@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { DBData, getTransactionMotos } from '../../lib/helpers';
+import { DBData, getCompleteTransactions } from '../../lib/helpers';
 import { prismaClient } from '../../lib/prismaClient';
 
 export default async function handler(
@@ -11,7 +11,7 @@ export default async function handler(
 	const motorcycles = await prismaClient.motorcycle.findMany();
 	const transactions = await prismaClient.transaction.findMany();
 
-	const completeTransactions = getTransactionMotos(
+	const completeTransactions = getCompleteTransactions(
 		clients,
 		motorcycles,
 		transactions

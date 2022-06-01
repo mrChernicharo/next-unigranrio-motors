@@ -25,18 +25,18 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 	if (transaction) transactionID = transaction.id;
 
 	const clientOpts: IDropdownOption[] = [
-		{ id: '', name: '', value: '' },
+		{ id: 0, name: '', value: '' },
 		...clients.map(client => ({
-			id: String(client.id),
+			id: client.id,
 			name: `${client.firstName} ${client.lastName}`,
 			value: client.id,
 		})),
 	];
 
 	const motorcycleOpts: IDropdownOption[] = [
-		{ id: '', name: '', value: '' },
+		{ id: 0, name: '', value: '' },
 		...motorcycles.map(motorcycle => ({
-			id: String(motorcycle.id),
+			id: motorcycle.id,
 			name: motorcycle.name,
 			value: motorcycle.id,
 		})),
@@ -82,10 +82,10 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 							total: getTotal(values.motorcycles),
 					  });
 
-				resetForm();
+				// resetForm();
 
 				const event = new Event('submit', { bubbles: true });
-				onSubmitted(event);
+				// onSubmitted(event);
 			}}
 		>
 			{

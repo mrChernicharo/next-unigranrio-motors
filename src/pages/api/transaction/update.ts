@@ -1,16 +1,19 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { Motorcycle } from '@prisma/client';
+import { Transaction } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prismaClient } from '../../../lib/prismaClient';
 
 export default async function handler(
 	req: NextApiRequest,
-	res: NextApiResponse<Motorcycle>
+	res: NextApiResponse<Transaction>
 ) {
-	const { motorcycleId } = req.body;
+	const { transactionData } = req.body;
 
-	const data = await prismaClient.motorcycle.delete({
-		where: { id: motorcycleId },
+	const data = await prismaClient.transaction.update({
+		data: {
+			...transactionData,
+		},
+		where: { id: transactionData.id },
 	});
 
 	res.status(200).json({ ...data });

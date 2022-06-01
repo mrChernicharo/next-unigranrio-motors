@@ -3,7 +3,7 @@ import type { GetStaticProps } from 'next';
 import { useContext } from 'react';
 import Home from '../components/Home';
 import { DataContext } from '../contexts/DataContext';
-import { CompleteTransaction, getTransactionMotos } from '../lib/helpers';
+import { CompleteTransaction, getCompleteTransactions } from '../lib/helpers';
 import { prismaClient } from '../lib/prismaClient';
 
 export interface InitialProps {
@@ -34,7 +34,7 @@ export const getStaticProps: GetStaticProps = async ctx => {
 	const motorcycles = await prismaClient.motorcycle.findMany();
 	const transactions = await prismaClient.transaction.findMany();
 
-	const completeTransactions = getTransactionMotos(
+	const completeTransactions = getCompleteTransactions(
 		clients,
 		motorcycles,
 		transactions

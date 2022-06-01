@@ -1,4 +1,4 @@
-import { Client, Motorcycle } from '@prisma/client';
+import { Client, Motorcycle, Transaction } from '@prisma/client';
 import {
 	createContext,
 	Dispatch,
@@ -12,6 +12,7 @@ import {
 	CompleteTransaction,
 	DBData,
 	FormTransaction,
+	getCompleteTransactions,
 	postCreateClient,
 	postCreateMotorcycle,
 	postCreateTransaction,
@@ -131,18 +132,25 @@ export const DataContextProvider = ({
 
 	const createTransaction = async (postData: FormTransaction) => {
 		withLoader(async () => {
-			console.log({ postData });
-			const res = await postCreateTransaction(postData);
-			setTransactions([...transactions, res]);
+			const res: Transaction = await postCreateTransaction(postData);
+			console.log(res);
+			const completeTransactions = getCompleteTransactions(
+				clients,
+				motorcycles,
+				[res]
+			);
+
+			setTransactions([...transactions, ...completeTransactions]);
 		});
 	};
 	const updateTransaction = async (postData: FormTransaction) => {
 		withLoader(async () => {
 			console.log({ postData });
 			const res = await postUpdateTransaction(postData);
-			setTransactions(
-				transactions.map(t => (t.id === postData.id ? res : t))
-			);
+			console.log({ res });
+			// setTransactions(
+			// 	transactions.map(t => (t.id === postData.id ? res : t))
+			// );
 		});
 	};
 	const deleteTransaction = async (transactionId: number) => {

@@ -2,7 +2,7 @@ import { Field } from 'formik';
 import { ReactNode } from 'react';
 
 export interface IDropdownOption {
-	id: string;
+	id: number;
 	name: string;
 	value: string | number;
 }

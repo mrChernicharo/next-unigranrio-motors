@@ -117,22 +117,42 @@ export async function postDeleteMotorcycle(motorcycleId: number) {
 	const res = await apiPost('api/motorcycle/delete', { motorcycleId });
 	return res;
 }
-export async function postCreateTransaction(transactionData: FormTransaction) {
-	const res: CompleteTransaction = await apiPost('api/transaction/create', {
-		transactionData,
-	});
-	return res;
-}
 
 // *************//
 // TRANSACTIONS //
 // *************//
 
-export async function postUpdateTransaction(transactionData: FormTransaction) {
-	const res: CompleteTransaction = await apiPost('api/transaction/update', {
+export async function postCreateTransaction(postData: FormTransaction) {
+	console.log({ postData });
+	const { clientId, motorcycles } = postData;
+
+	const motosStr = motorcycles.map(m => `${m.id}:${m.quantity}`).join(',');
+
+	const transactionData: Partial<Transaction> = {
+		clientId: Number(clientId),
+		createdAt: new Date().toISOString(),
+		motorcycles: motosStr,
+	};
+
+	console.log({ transactionData });
+
+	const res: Transaction = await apiPost('api/transaction/create', {
 		transactionData,
 	});
+
 	return res;
+
+	// const completeData: CompleteTransaction = {
+
+	// }
+	// return completeData;
+}
+
+export async function postUpdateTransaction(postData: FormTransaction) {
+	// const res: CompleteTransaction = await apiPost('api/transaction/update', {
+	// 	transactionData,
+	// });
+	// return res;
 }
 
 export async function postDeleteTransaction(TransactionId: number) {
@@ -140,11 +160,25 @@ export async function postDeleteTransaction(TransactionId: number) {
 	return res;
 }
 
-export const getTransactionMotos = (
+export const getCompleteTransactions = (
 	clients: Client[],
 	motorcycles: Motorcycle[],
 	transactions: Transaction[]
 ) => {
+	const completeTransactions: CompleteTransaction[] = decodeTransactions(
+		clients,
+		motorcycles,
+		transactions
+	);
+
+	return completeTransactions;
+};
+
+export function decodeTransactions(
+	clients: Client[],
+	motorcycles: Motorcycle[],
+	transactions: Transaction[]
+) {
 	// organize clients and motorcycles in objects
 	let clientsObj: { [x: number]: Client } = {};
 	clients.forEach(client => {
@@ -160,40 +194,36 @@ export const getTransactionMotos = (
 		}
 	});
 
-	const completeTransactions: CompleteTransaction[] = transactions.map(
-		trans => {
-			const { id, clientId, createdAt } = trans;
+	return transactions.map(trans => {
+		const { id, clientId, createdAt } = trans;
 
-			const client = clientsObj[clientId];
+		const client = clientsObj[clientId];
 
-			const decodedMotos = trans.motorcycles.split(',').map(moto => {
-				const [id, quantity] = moto.split(':').map(Number);
-				return { id, quantity };
-			});
+		const decodedMotos = trans.motorcycles.split(',').map(moto => {
+			const [id, quantity] = moto.split(':').map(Number);
+			return { id, quantity };
+		});
 
-			const motorcycles = decodedMotos.map(m => {
-				const motorcycle = motorcyclesObj[m.id];
+		const motorcycles = decodedMotos.map(m => {
+			const motorcycle = motorcyclesObj[m.id];
 
-				return { ...motorcycle, quantity: m.quantity };
-			});
+			return { ...motorcycle, quantity: m.quantity };
+		});
 
-			const total = motorcycles.reduce(
-				(acc, moto) => acc + moto.price * moto.quantity,
-				0
-			);
+		const total = motorcycles.reduce(
+			(acc, moto) => acc + moto.price * moto.quantity,
+			0
+		);
 
-			const result = {
-				id,
-				client,
-				motorcycles,
-				total,
-				createdAt,
-				// createdAt: new Date(Date.parse(trans.createdAt)),
-			};
+		const result = {
+			id,
+			client,
+			motorcycles,
+			total,
+			createdAt,
+			// createdAt: new Date(Date.parse(trans.createdAt)),
+		};
 
-			return result;
-		}
-	);
-
-	return completeTransactions;
-};
+		return result;
+	}) as CompleteTransaction[];
+}

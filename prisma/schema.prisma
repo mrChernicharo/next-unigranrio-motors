@@ -17,7 +17,7 @@ model Client {
 }
 
 model Motorcycle {
-    id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 	name String
 	description String
 	year Int @default(2020)
