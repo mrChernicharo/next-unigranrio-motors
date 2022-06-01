@@ -2,6 +2,7 @@
 .transactions-page-container {
 	padding-top: 6rem;
 	transition: 0.2s;
+	margin-bottom: 54px;
 }
 
 .search-input-container {

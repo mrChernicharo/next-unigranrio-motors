@@ -44,12 +44,15 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 
 	const getMoto = (id: number) => motorcycles.find(moto => moto.id === id);
 
-	const getTotal = (motos: { id: number; quantity: number }[]) =>
-		motos.reduce(
+	const getTotal = (motos: { id: number; quantity: number }[]) => {
+		console.log(motos);
+		// return 0;
+		return motos.reduce(
 			(acc, moto) =>
-				(acc += (getMoto(moto.id)?.price || 0) * moto.quantity),
+				(acc += (getMoto(Number(moto.id))?.price || 0) * moto.quantity),
 			0
 		);
+	};
 
 	return (
 		<Formik
@@ -60,7 +63,7 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 							id: item.id,
 							quantity: item.quantity,
 					  }))
-					: [{ id: 1, quantity: 1 }],
+					: [{ id: 0, quantity: 1 }],
 				total: transaction?.total || 0,
 			}}
 			validationSchema={transactionSchema}
