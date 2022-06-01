@@ -1,6 +1,7 @@
 /********** transactions *************/
 .transactions-page-container {
-	padding-top: 5rem;
+	padding-top: 6rem;
+	transition: 0.2s;
 }
 
 .search-input-container {
@@ -84,14 +85,17 @@ li.transaction-li img.transaction-img {
 	height: 60px;
 }
 
-@media screen and(max-width: 720px) {
+@media screen and (max-width: 720px) {
 	.search-input {
 		left: 12px;
 	}
 }
 
-@media screen and(max-width: 450px) {
+@media screen and (max-width: 450px) {
 	.search-input {
 		left: 0px;
+	}
+	.transactions-page-container {
+		padding-top: 7rem;
 	}
 }

@@ -30,8 +30,11 @@ export default function TransactionItem({ transaction, onDelete }: IProps) {
 			>
 				<p>Cliente: {`${firstName} ${lastName}`}</p>
 
-				<p>Itens:</p>
 				<ul className="transaction-itens-ul">
+					<li>
+						<p>Itens:</p>
+					</li>
+
 					{motorcycles.length > 0 &&
 						motorcycles.map(moto => {
 							const {
@@ -49,7 +52,7 @@ export default function TransactionItem({ transaction, onDelete }: IProps) {
 											<span>
 												{
 													/* prettier-ignore */
-													`( x${quantity} ${toCurrency(price * quantity)} )`
+													` x${quantity} (${toCurrency(price * quantity)})`
 												}
 											</span>
 										)}
