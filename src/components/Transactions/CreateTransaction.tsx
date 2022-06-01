@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiPlus, FiX } from 'react-icons/fi';
 import TransactionForm from './TransactionForm';
 
@@ -8,6 +8,8 @@ export default function CreateTransaction() {
 	const handleCreateClientClick = (isFormShown: boolean) => (e: any) => {
 		setIsFormShown(!isFormShown);
 	};
+
+	useEffect(() => console.log('form shown?', isFormShown), [isFormShown]);
 
 	return (
 		<div className={`new-form-container ${isFormShown ? 'open' : 'close'}`}>
@@ -19,7 +21,12 @@ export default function CreateTransaction() {
 			</button>
 
 			{isFormShown && (
-				<TransactionForm onSubmitted={() => setIsFormShown(false)} />
+				<TransactionForm
+					onSubmitted={() => {
+						console.log('submitted');
+						// setIsFormShown(false)
+					}}
+				/>
 			)}
 		</div>
 	);

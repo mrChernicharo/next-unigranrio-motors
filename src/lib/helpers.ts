@@ -16,6 +16,13 @@ export interface CompleteTransaction {
 	createdAt: string;
 }
 
+export interface FormTransaction {
+	id?: number;
+	clientId: number;
+	motorcycles: { id: number; quantity: number }[];
+	total: number;
+}
+
 export type DBData = {
 	clients: Client[];
 	motorcycles: Motorcycle[];

@@ -8,7 +8,7 @@ interface ClientsListProps {
 }
 
 export default function ClientsList({ clients }: ClientsListProps) {
-	const { deleteClient } = useContext(DataContext);
+	const { isLoading, deleteClient } = useContext(DataContext);
 
 	const handleDeleteClient = (id: number) => {
 		deleteClient(id);
@@ -23,6 +23,8 @@ export default function ClientsList({ clients }: ClientsListProps) {
 					onDelete={handleDeleteClient}
 				/>
 			))}
+
+			{isLoading && <div>Loading....</div>}
 		</div>
 	);
 }

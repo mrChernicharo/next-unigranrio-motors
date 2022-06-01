@@ -13,21 +13,13 @@ const Clients = () => {
 
 	return (
 		<>
-			{isLoading ? (
-				<div className="page-container">
-					<h1>Clientes</h1>
+			<div className="page-container">
+				<h1>Clientes</h1>
 
-					<div>Loading...</div>
-				</div>
-			) : (
-				<div className="page-container">
-					<h1>Clientes</h1>
+				<ClientsList clients={clients} />
 
-					<ClientsList clients={clients} />
-
-					<CreateClient />
-				</div>
-			)}
+				<CreateClient />
+			</div>
 		</>
 	);
 };

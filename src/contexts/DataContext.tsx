@@ -11,6 +11,7 @@ import {
 import {
 	CompleteTransaction,
 	DBData,
+	FormTransaction,
 	postCreateClient,
 	postDeleteClient,
 	postUpdateClient,
@@ -34,8 +35,8 @@ export interface IDataContext {
 	deleteMotorcycle: (id: number) => void;
 
 	setTransactions: Dispatch<SetStateAction<CompleteTransaction[]>>;
-	createTransaction: (TransactionData: Partial<CompleteTransaction>) => void;
-	updateTransaction: (TransactionData: Partial<CompleteTransaction>) => void;
+	createTransaction: (TransactionData: FormTransaction) => void;
+	updateTransaction: (TransactionData: FormTransaction) => void;
 	deleteTransaction: (id: number) => void;
 }
 
@@ -70,32 +71,54 @@ export const DataContextProvider = ({
 	const [transactions, setTransactions] = useState<CompleteTransaction[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 
+	const withLoader = async cb => {
+		console.log('withLoader');
+		setIsLoading(true);
+		cb().then(() => setIsLoading(false));
+	};
+
 	const createClient = async (clientData: Partial<Client>) => {
-		setIsLoading(true);
-		const res = await postCreateClient(clientData);
-		setIsLoading(false);
-		setClients([...clients, res]);
+		withLoader(async () => {
+			const res = await postCreateClient(clientData);
+			setClients([...clients, res]);
+		});
 	};
+
 	const updateClient = async (clientData: Partial<Client>) => {
-		setIsLoading(true);
-		const res = await postUpdateClient(clientData);
-		setIsLoading(false);
-
-		setClients(clients.map(c => (c.id === clientData.id ? res : c)));
+		withLoader(async () => {
+			const res = await postUpdateClient(clientData);
+			setClients(clients.map(c => (c.id === clientData.id ? res : c)));
+		});
 	};
+
 	const deleteClient = async (clientId: number) => {
-		setIsLoading(true);
-		const res = await postDeleteClient(clientId);
-		setIsLoading(false);
-
-		setClients(clients.filter(c => c.id !== clientId));
+		withLoader(async () => {
+			const res = await postDeleteClient(clientId);
+			setClients(clients.filter(c => c.id !== clientId));
+		});
 	};
-	const createMotorcycle = () => {};
-	const updateMotorcycle = () => {};
-	const deleteMotorcycle = () => {};
-	const createTransaction = () => {};
-	const updateTransaction = () => {};
-	const deleteTransaction = () => {};
+	const createMotorcycle = async () => {
+		withLoader(async () => {});
+	};
+	const updateMotorcycle = async () => {
+		withLoader(async () => {});
+	};
+	const deleteMotorcycle = async () => {
+		withLoader(async () => {});
+	};
+	const createTransaction = async (transactionData: FormTransaction) => {
+		withLoader(async () => {
+			console.log({ transactionData });
+		});
+	};
+	const updateTransaction = async (transactionData: FormTransaction) => {
+		withLoader(async () => {
+			console.log({ transactionData });
+		});
+	};
+	const deleteTransaction = async () => {
+		withLoader(async () => {});
+	};
 
 	const context: IDataContext = {
 		isLoading,

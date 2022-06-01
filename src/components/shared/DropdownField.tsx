@@ -2,13 +2,13 @@ import { Field } from 'formik';
 import { ReactNode } from 'react';
 
 export interface IDropdownOption {
-	id: number;
+	id: string;
 	name: string;
 	value: string | number;
 }
 
 interface ISelectProps {
-	id: number;
+	id: string;
 	name: string;
 	label?: string;
 	placeholder?: string;

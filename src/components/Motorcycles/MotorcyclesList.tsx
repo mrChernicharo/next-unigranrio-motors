@@ -1,6 +1,7 @@
 // import Global from '../../../../hooks/Global';
 import { Motorcycle } from '@prisma/client';
-import * as React from 'react';
+import React, { useContext } from 'react';
+import { DataContext } from '../../contexts/DataContext';
 import MotorcycleItem from './MotorcyclesItem';
 
 interface MotorcyclesListProps {
@@ -8,10 +9,10 @@ interface MotorcyclesListProps {
 }
 
 const MotorcyclesList = ({ motorcycles }: MotorcyclesListProps) => {
-	// const { deleteMotorcycle } = useContext(DataContext);
+	const { isLoading, deleteMotorcycle } = useContext(DataContext);
 
 	const handleDeletedMotorcycle = (id: number) => {
-		// deleteMotorcycle(id);
+		deleteMotorcycle(id);
 		console.log(`delete ${id}`);
 	};
 	return (
@@ -23,6 +24,8 @@ const MotorcyclesList = ({ motorcycles }: MotorcyclesListProps) => {
 					onDelete={handleDeletedMotorcycle}
 				/>
 			))}
+
+			{isLoading && <div>Loading....</div>}
 		</div>
 	);
 };
