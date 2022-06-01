@@ -117,9 +117,7 @@ export async function postDeleteMotorcycle(motorcycleId: number) {
 	const res = await apiPost('api/motorcycle/delete', { motorcycleId });
 	return res;
 }
-export async function postCreateTransaction(
-	transactionData: Partial<Transaction>
-) {
+export async function postCreateTransaction(transactionData: FormTransaction) {
 	const res: CompleteTransaction = await apiPost('api/transaction/create', {
 		transactionData,
 	});
@@ -130,9 +128,7 @@ export async function postCreateTransaction(
 // TRANSACTIONS //
 // *************//
 
-export async function postUpdateTransaction(
-	transactionData: Partial<Transaction>
-) {
+export async function postUpdateTransaction(transactionData: FormTransaction) {
 	const res: CompleteTransaction = await apiPost('api/transaction/update', {
 		transactionData,
 	});

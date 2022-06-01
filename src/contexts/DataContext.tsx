@@ -14,10 +14,13 @@ import {
 	FormTransaction,
 	postCreateClient,
 	postCreateMotorcycle,
+	postCreateTransaction,
 	postDeleteClient,
 	postDeleteMotorcycle,
+	postDeleteTransaction,
 	postUpdateClient,
 	postUpdateMotorcycle,
+	postUpdateTransaction,
 } from '../lib/helpers';
 
 export interface IDataContext {
@@ -119,7 +122,6 @@ export const DataContextProvider = ({
 	};
 	const deleteMotorcycle = async (motoId: number) => {
 		withLoader(async () => {
-			console.log({ motoId });
 			const res = await postDeleteMotorcycle(motoId);
 			setMotorcycles(motorcycles.filter(moto => moto.id !== motoId));
 		});
@@ -130,16 +132,24 @@ export const DataContextProvider = ({
 	const createTransaction = async (postData: FormTransaction) => {
 		withLoader(async () => {
 			console.log({ postData });
+			const res = await postCreateTransaction(postData);
+			setTransactions([...transactions, res]);
 		});
 	};
 	const updateTransaction = async (postData: FormTransaction) => {
 		withLoader(async () => {
 			console.log({ postData });
+			const res = await postUpdateTransaction(postData);
+			setTransactions(
+				transactions.map(t => (t.id === postData.id ? res : t))
+			);
 		});
 	};
 	const deleteTransaction = async (transactionId: number) => {
 		withLoader(async () => {
 			console.log({ transactionId });
+			const res = await postDeleteTransaction(transactionId);
+			setTransactions(transactions.filter(t => t.id !== transactionId));
 		});
 	};
 
