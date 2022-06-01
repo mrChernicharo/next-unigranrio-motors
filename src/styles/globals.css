@@ -11,9 +11,11 @@
 	--bg-color: #333;
 	--bg: #282c34;
 	--dark-bg: #191a1b;
+	--shadow: #31363f;
 
 	--text-color: #efe;
 	--alt-text: #cdcdcd;
+	--alt-text-light: #696060;
 
 	--accent: goldenrod;
 	--danger: #b71c1c;
@@ -42,8 +44,7 @@ body {
 	background-color: var(--bg);
 
 	color: var(--text-color);
-	padding-top: 1rem;
-	font-size: calc(8px + 2vmin);
+	font-size: min(calc(8px + 2vmin), 22px);
 }
 
 * {
@@ -52,6 +53,10 @@ body {
 
 h1 {
 	padding-left: 2rem;
+}
+
+h5 {
+	margin: 0;
 }
 
 p {
@@ -112,7 +117,7 @@ select {
 
 input::placeholder,
 select ::placeholder {
-	color: #31363f;
+	color: var(--alt-text);
 }
 
 .App {
@@ -124,7 +129,7 @@ select ::placeholder {
 
 .page-container {
 	margin: 0 auto;
-	padding-top: 1rem;
+	padding-top: 2rem;
 }
 
 .banner {
@@ -132,5 +137,5 @@ select ::placeholder {
 
 	width: 100vw;
 	height: 600px;
-	box-shadow: 43px 43px 95px #1f2229, -13px -3px 55px #31363f;
+	box-shadow: 43px 43px 95px #1f2229, -13px -3px 55px var(--shadow);
 }

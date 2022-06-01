@@ -4,7 +4,7 @@ interface CompleteTransactionSearchProps {
 	onChange: (value: string) => void;
 }
 
-const placeholder = 'Filtrar vendas por nome, moto ou valor...';
+const placeholder = 'Filtrar vendas por nome, moto ou valor';
 
 export default function TransactionsSearch({
 	onChange,
@@ -20,6 +20,7 @@ export default function TransactionsSearch({
 					type="text"
 					onChange={handleChange}
 					placeholder={placeholder}
+					className="transaction-search-input"
 				></input>
 			</div>
 		</>

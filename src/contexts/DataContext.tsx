@@ -26,6 +26,8 @@ import {
 
 export interface IDataContext {
 	isLoading: boolean;
+	currentPage: string;
+	setCurrentPage: Dispatch<SetStateAction<string>>;
 
 	clients: Client[];
 	motorcycles: Motorcycle[];
@@ -53,6 +55,8 @@ export interface IDataContextProviderProps {
 
 export const DataContext = createContext<IDataContext>({
 	isLoading: true,
+	currentPage: 'Home',
+	setCurrentPage: () => {},
 	clients: [],
 	motorcycles: [],
 	transactions: [],
@@ -77,6 +81,7 @@ export const DataContextProvider = ({
 	const [motorcycles, setMotorcycles] = useState<Motorcycle[]>([]);
 	const [transactions, setTransactions] = useState<CompleteTransaction[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [currentPage, setCurrentPage] = useState('Home');
 
 	const withLoader = async cb => {
 		console.log('withLoader');
@@ -163,6 +168,8 @@ export const DataContextProvider = ({
 
 	const context: IDataContext = {
 		isLoading,
+		currentPage,
+		setCurrentPage,
 
 		clients,
 		motorcycles,

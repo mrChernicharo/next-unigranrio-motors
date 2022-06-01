@@ -3,7 +3,7 @@
 /****************************/
 .nav-container {
 	width: 100vw;
-	padding: 0.5rem;
+	padding: 0.5rem 1rem;
 	/* height: 38px; */
 	position: fixed;
 	background: var(--dark-bg);
@@ -18,7 +18,7 @@
 }
 
 .nav-container > span > span {
-	margin-inline: 0.25rem;
+	margin-inline: 0.15rem;
 }
 
 .nav-link {
@@ -142,8 +142,17 @@
 	border-radius: 8px;
 	background: #282c34;
 	transition: 0.3s;
-	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px #31363f;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px var(--shadow);
 	min-height: 300px;
+}
+
+.new-form-container.open {
+	padding: 2rem;
+	border-radius: 8px;
+	background: #282c34;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px var(--shadow);
+	min-width: 300px;
+	min-height: 400px;
 }
 
 .new-form-container {
@@ -153,16 +162,8 @@
 	bottom: 2rem;
 	right: 2rem;
 }
-.new-form-container {
-	padding: 2rem;
-	border-radius: 8px;
-	background: #282c34;
-	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px #31363f;
-	min-width: 300px;
-	min-height: 400px;
-}
 
-.new-form-container .new-form-button .open {
+.new-form-container .new-form-button.open {
 	border-radius: 50%;
 	height: 64px;
 	width: 64px;
@@ -176,12 +177,12 @@
 	color: #fff;
 }
 
-.new-form-button .close {
+.new-form-container .new-form-button.close {
 	background-color: transparent;
-	/* border: 1px solid #fff; */
 	width: 46px;
 }
-.new-form-button .close svg {
+
+.new-form-container .new-form-button.close svg {
 	width: 2rem;
 	height: 2rem;
 	stroke-width: 2px;
@@ -199,7 +200,7 @@
 	background: #282c34;
 	cursor: pointer;
 	transition: 0.3s;
-	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px #31363f;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px var(--shadow);
 }
 
 .app-card:hover {
@@ -230,7 +231,7 @@
 	padding: 1rem;
 }
 .app-modal img {
-	width: 300px;
+	/* width: 300px; */
 	height: 180px;
 	border-radius: 6px;
 }
@@ -250,10 +251,14 @@
 /****************************/
 
 .list-container {
-	/* width: 100vw; */
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	/* grid-gap: 2rem; */
+	grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media screen and (max-width: 1286px) {
+	.list-container {
+		grid-template-columns: 1fr 1fr;
+	}
 }
 
 @media screen and (max-width: 720px) {

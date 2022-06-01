@@ -1,6 +1,6 @@
 /********** transactions *************/
 .transactions-page-container {
-	padding-top: 4rem;
+	padding-top: 5rem;
 }
 
 .search-input-container {
@@ -27,7 +27,7 @@
 	border-radius: 06px;
 	width: 400px;
 	margin: 0 auto;
-	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px #31363f;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px var(--shadow);
 	transition: 0.7s;
 }
 
@@ -42,6 +42,13 @@
 	border: none;
 	width: 100%;
 	height: 32px;
+}
+
+.transaction-search-input {
+	color: var(--dark-bg);
+}
+.transaction-search-input::placeholder {
+	color: rgb(120, 122, 125);
 }
 
 .transaction-item {
@@ -62,17 +69,17 @@
 
 li.transaction-li {
 	/* border: 1px solid;*/
-	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px #31363f;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px var(--shadow);
 	border-radius: 12px;
 	padding: 0.5rem 1.5rem;
 	margin-bottom: 1rem;
 }
 
 li.transaction-li .moto-details {
-	/* border: 1px solid;*/
 	display: flex;
 	justify-content: space-between;
 }
+
 li.transaction-li img.transaction-img {
 	height: 60px;
 }

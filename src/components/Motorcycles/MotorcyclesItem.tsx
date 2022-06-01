@@ -34,7 +34,9 @@ export default function MotorcycleItem({
 					{name}
 					<p>{year}</p>
 				</h5>
-				<p>{description}</p>
+				<p style={{ maxWidth: 280, marginBlock: '.5rem' }}>
+					{description}
+				</p>
 
 				<img src={imgURL} />
 				<p>{toCurrency(price)}</p>
