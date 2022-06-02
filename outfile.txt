@@ -1,0 +1,2903 @@
+>>>>  /src/pages/_app.tsx  <<<<
+
+import type { AppProps } from 'next/app';
+import Nav from '../components/shared/Nav';
+import { DataContextProvider } from '../contexts/DataContext';
+import '../styles/animations.css';
+import '../styles/clients.css';
+import '../styles/globals.css';
+import '../styles/motos.css';
+import '../styles/shared.css';
+import '../styles/transactions.css';
+
+function MyApp({ Component, pageProps }: AppProps) {
+	console.log(pageProps);
+	return (
+		<DataContextProvider>
+			<Nav />
+
+			<Component {...pageProps} />
+		</DataContextProvider>
+	);
+}
+
+export default MyApp;
+
+
+>>>>  /src/pages/index.tsx  <<<<
+
+import { Client, Motorcycle, Transaction } from '@prisma/client';
+import type { GetStaticProps } from 'next';
+import { useContext } from 'react';
+import Home from '../components/Home';
+import { DataContext } from '../contexts/DataContext';
+import { CompleteTransaction, getCompleteTransactions } from '../lib/helpers';
+import { prismaClient } from '../lib/prismaClient';
+
+export interface InitialProps {
+	clients: Client[];
+	motorcycles: Motorcycle[];
+	transactions: Transaction[];
+	completeTransactions: CompleteTransaction[];
+}
+
+const Index = ({
+	clients,
+	motorcycles,
+	transactions,
+	completeTransactions,
+}: InitialProps) => {
+	console.log({ clients, motorcycles, transactions, completeTransactions });
+
+	const { setClients, setMotorcycles, setTransactions } =
+		useContext(DataContext);
+
+	return <Home />;
+};
+
+export const getStaticProps: GetStaticProps = async ctx => {
+	// console.log(ctx);
+
+	const clients = await prismaClient.client.findMany();
+	const motorcycles = await prismaClient.motorcycle.findMany();
+	const transactions = await prismaClient.transaction.findMany();
+
+	const completeTransactions = getCompleteTransactions(
+		clients,
+		motorcycles,
+		transactions
+	);
+
+	return {
+		props: {
+			clients,
+			motorcycles,
+			transactions,
+			completeTransactions,
+		},
+		revalidate: 60,
+	};
+};
+
+export default Index;
+
+
+>>>>  /src/contexts/DataContext.tsx  <<<<
+
+import { Client, Motorcycle, Transaction } from '@prisma/client';
+import {
+	createContext,
+	Dispatch,
+	ReactNode,
+	SetStateAction,
+	useContext,
+	useEffect,
+	useState,
+} from 'react';
+import {
+	CompleteTransaction,
+	DBData,
+	FormTransaction,
+	getCompleteTransactions,
+	postCreateClient,
+	postCreateMotorcycle,
+	postCreateTransaction,
+	postDeleteClient,
+	postDeleteMotorcycle,
+	postDeleteTransaction,
+	postUpdateClient,
+	postUpdateMotorcycle,
+	postUpdateTransaction,
+} from '../lib/helpers';
+
+export interface IDataContext {
+	isLoading: boolean;
+	currentPage: string;
+	setCurrentPage: Dispatch<SetStateAction<string>>;
+
+	clients: Client[];
+	motorcycles: Motorcycle[];
+	transactions: CompleteTransaction[];
+
+	setClients: Dispatch<SetStateAction<Client[]>>;
+	createClient: (clientData: Partial<Client>) => Promise<void>;
+	updateClient: (clientData: Partial<Client>) => Promise<void>;
+	deleteClient: (id: number) => Promise<void>;
+
+	setMotorcycles: Dispatch<SetStateAction<Motorcycle[]>>;
+	createMotorcycle: (motorcycleData: Partial<Motorcycle>) => Promise<void>;
+	updateMotorcycle: (motorcycleData: Partial<Motorcycle>) => Promise<void>;
+	deleteMotorcycle: (id: number) => Promise<void>;
+
+	setTransactions: Dispatch<SetStateAction<CompleteTransaction[]>>;
+	createTransaction: (TransactionData: FormTransaction) => Promise<void>;
+	updateTransaction: (TransactionData: FormTransaction) => Promise<void>;
+	deleteTransaction: (id: number) => Promise<void>;
+}
+
+export interface IDataContextProviderProps {
+	children: ReactNode;
+}
+
+export const DataContext = createContext<IDataContext>({
+	isLoading: true,
+	currentPage: 'Home',
+	setCurrentPage: () => {},
+	clients: [],
+	motorcycles: [],
+	transactions: [],
+	setClients: () => {},
+	createClient: async () => {},
+	updateClient: async () => {},
+	deleteClient: async () => {},
+	setMotorcycles: () => {},
+	createMotorcycle: async () => {},
+	updateMotorcycle: async () => {},
+	setTransactions: async () => {},
+	deleteMotorcycle: async () => {},
+	createTransaction: async () => {},
+	updateTransaction: async () => {},
+	deleteTransaction: async () => {},
+});
+
+export const DataContextProvider = ({
+	children,
+}: IDataContextProviderProps) => {
+	const [clients, setClients] = useState<Client[]>([]);
+	const [motorcycles, setMotorcycles] = useState<Motorcycle[]>([]);
+	const [transactions, setTransactions] = useState<CompleteTransaction[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [currentPage, setCurrentPage] = useState('Home');
+
+	const withLoader = async cb => {
+		console.log('withLoader');
+		setIsLoading(true);
+		cb().then(() => setIsLoading(false));
+	};
+
+	// ******** clients ********** //
+
+	const createClient = async (clientData: Partial<Client>) => {
+		withLoader(async () => {
+			const res = await postCreateClient(clientData);
+			setClients([...clients, res]);
+		});
+	};
+
+	const updateClient = async (clientData: Partial<Client>) => {
+		withLoader(async () => {
+			const res = await postUpdateClient(clientData);
+			setClients(clients.map(c => (c.id === clientData.id ? res : c)));
+		});
+	};
+
+	const deleteClient = async (clientId: number) => {
+		withLoader(async () => {
+			const res = await postDeleteClient(clientId);
+			setClients(clients.filter(c => c.id !== clientId));
+		});
+	};
+
+	// ******** motorcycles ********** //
+
+	const createMotorcycle = async (postData: Partial<Motorcycle>) => {
+		withLoader(async () => {
+			const res = await postCreateMotorcycle(postData);
+			setMotorcycles([...motorcycles, res]);
+		});
+	};
+	const updateMotorcycle = async (postData: Partial<Motorcycle>) => {
+		withLoader(async () => {
+			const res = await postUpdateMotorcycle(postData);
+			setMotorcycles(motorcycles.map(m => (m.id === res.id ? res : m)));
+		});
+	};
+	const deleteMotorcycle = async (motoId: number) => {
+		withLoader(async () => {
+			const res = await postDeleteMotorcycle(motoId);
+			setMotorcycles(motorcycles.filter(moto => moto.id !== motoId));
+		});
+	};
+
+	// ******** transactions ********** //
+
+	const createTransaction = async (postData: FormTransaction) => {
+		withLoader(async () => {
+			const res: Transaction = await postCreateTransaction(postData);
+			console.log(res);
+			const completeTransactions = getCompleteTransactions(
+				clients,
+				motorcycles,
+				[res]
+			);
+
+			setTransactions([...transactions, ...completeTransactions]);
+		});
+	};
+	const updateTransaction = async (postData: FormTransaction) => {
+		withLoader(async () => {
+			console.log({ postData });
+			const res = await postUpdateTransaction(postData);
+			const completeTransactions = getCompleteTransactions(
+				clients,
+				motorcycles,
+				[res]
+			);
+			setTransactions(
+				transactions.map(t =>
+					t.id === postData.id ? completeTransactions[0] : t
+				)
+			);
+		});
+	};
+	const deleteTransaction = async (transactionId: number) => {
+		withLoader(async () => {
+			console.log({ transactionId });
+			const res = await postDeleteTransaction(transactionId);
+			setTransactions(transactions.filter(t => t.id !== transactionId));
+		});
+	};
+
+	const context: IDataContext = {
+		isLoading,
+		currentPage,
+		setCurrentPage,
+
+		clients,
+		motorcycles,
+		transactions,
+
+		setClients,
+		createClient,
+		updateClient,
+		deleteClient,
+
+		setMotorcycles,
+		createMotorcycle,
+		updateMotorcycle,
+		deleteMotorcycle,
+
+		setTransactions,
+		createTransaction,
+		updateTransaction,
+		deleteTransaction,
+	};
+
+	//fetch initial data
+	useEffect(() => {
+		fetch('/api/fetchData')
+			.then(res => res.json())
+			.then((data: DBData) => {
+				const { clients, motorcycles, completeTransactions } = data;
+				setClients(clients);
+				setMotorcycles(motorcycles);
+				setTransactions(completeTransactions);
+				console.log('andale!');
+				setIsLoading(false);
+			});
+	}, []);
+
+	return (
+		<DataContext.Provider value={context}>{children}</DataContext.Provider>
+	);
+};
+
+export const useDataContext = () => {
+	return useContext(DataContext);
+};
+
+
+>>>>  /src/lib/constants.ts  <<<<
+
+export const defaultMotoImgURL =
+	'https://www.indianmotorcyclelakeville.com/images/indianmotorcyclelakeville-slide-scout.png';
+
+
+>>>>  /src/lib/helpers.ts  <<<<
+
+import { Client, Motorcycle, Transaction } from '@prisma/client';
+
+export interface CompleteTransaction {
+	id: number;
+	client: Client;
+	motorcycles: {
+		id: number;
+		name: string;
+		description: string;
+		year: number;
+		price: number;
+		imgURL: string;
+		quantity: number;
+	}[];
+	total: number;
+	createdAt: string;
+}
+
+export interface FormTransaction {
+	id?: number;
+	clientId: number;
+	motorcycles: { id: number; quantity: number }[];
+	total: number;
+}
+
+export type DBData = {
+	clients: Client[];
+	motorcycles: Motorcycle[];
+	transactions: Transaction[];
+	completeTransactions: CompleteTransaction[];
+};
+
+export const capitalize = (str: string) =>
+	`${str[0].toUpperCase()}${str.substring(1)}`;
+
+export const toCurrency = (num: number) =>
+	'R$' + num.toLocaleString('pt-BR') + ',00';
+
+// prettier-ignore
+export const toDate = (str: string | Date) =>
+	`${new Date(str).toLocaleDateString('pt-BR')} às ${new Date(str).toLocaleTimeString('pt-BR')}`;
+
+export const getClientById = (clients: Client[], id: number) => {
+	return clients.find(client => client.id === id);
+};
+
+export const getMotoById = (motorcycles: Motorcycle[], id: number) => {
+	return motorcycles.find(moto => moto.id === id);
+};
+
+async function apiPost<T, K>(url: string, data: T): Promise<K> {
+	const response = await fetch(url, {
+		method: 'POST',
+		body: JSON.stringify(data),
+		headers: [['content-type', 'application/json']],
+	});
+
+	const result: K = await response.json();
+	return result;
+}
+
+// *************//
+//	  CLIENTS   //
+// *************//
+
+export async function postCreateClient(clientData: Partial<Client>) {
+	const res: Client = await apiPost('api/client/create', { clientData });
+	return res;
+}
+
+export async function postUpdateClient(clientData: Partial<Client>) {
+	const res: Client = await apiPost('api/client/update', { clientData });
+	return res;
+}
+
+export async function postDeleteClient(clientId: number) {
+	const res = await apiPost('api/client/delete', { clientId });
+	return res;
+}
+
+// **************//
+//  MOTORCYCLES  //
+// **************//
+
+export async function postCreateMotorcycle(postData: Partial<Motorcycle>) {
+	const { name, year, price, description, imgURL } = postData;
+	const motorcycleData = {
+		name,
+		description,
+		price: Number(price),
+		year: Number(year),
+		imgURL,
+	};
+	const res: Motorcycle = await apiPost('api/motorcycle/create', {
+		motorcycleData,
+	});
+	return res;
+}
+
+export async function postUpdateMotorcycle(postData: Partial<Motorcycle>) {
+	const { id, name, year, price, description, imgURL } = postData;
+	const motorcycleData = {
+		id,
+		name,
+		description,
+		price: Number(price),
+		year: Number(year),
+		imgURL,
+	};
+	const res: Motorcycle = await apiPost('api/motorcycle/update', {
+		motorcycleData,
+	});
+	return res;
+}
+
+export async function postDeleteMotorcycle(motorcycleId: number) {
+	const res = await apiPost('api/motorcycle/delete', { motorcycleId });
+	return res;
+}
+
+// *************//
+// TRANSACTIONS //
+// *************//
+
+export async function postCreateTransaction(postData: FormTransaction) {
+	console.log({ postData });
+	const { clientId, motorcycles } = postData;
+
+	const motosStr = motorcycles.map(m => `${m.id}:${m.quantity}`).join(',');
+
+	const transactionData: Partial<Transaction> = {
+		clientId: Number(clientId),
+		createdAt: new Date().toISOString(),
+		motorcycles: motosStr,
+	};
+
+	const res: Transaction = await apiPost('api/transaction/create', {
+		transactionData,
+	});
+
+	return res;
+}
+
+export async function postUpdateTransaction(postData: FormTransaction) {
+	console.log({ postData });
+	const { id, clientId, motorcycles } = postData;
+
+	const motosStr = motorcycles.map(m => `${m.id}:${m.quantity}`).join(',');
+
+	const transactionData: Partial<Transaction> = {
+		id,
+		clientId: Number(clientId),
+		createdAt: new Date().toISOString(),
+		motorcycles: motosStr,
+	};
+
+	const res: Transaction = await apiPost('api/transaction/update', {
+		transactionData,
+	});
+
+	return res;
+}
+
+export async function postDeleteTransaction(transactionId: number) {
+	const res = await apiPost('api/transaction/delete', { transactionId });
+	return res;
+}
+
+export const getCompleteTransactions = (
+	clients: Client[],
+	motorcycles: Motorcycle[],
+	transactions: Transaction[]
+) => {
+	const completeTransactions: CompleteTransaction[] = decodeTransactions(
+		clients,
+		motorcycles,
+		transactions
+	);
+
+	return completeTransactions;
+};
+
+export function decodeTransactions(
+	clients: Client[],
+	motorcycles: Motorcycle[],
+	transactions: Transaction[]
+) {
+	// organize clients and motorcycles in objects
+	let clientsObj: { [x: number]: Client } = {};
+	clients.forEach(client => {
+		if (!clientsObj[client.id]) {
+			clientsObj[client.id] = client;
+		}
+	});
+
+	let motorcyclesObj: { [x: number]: Motorcycle } = {};
+	motorcycles.forEach(moto => {
+		if (!(moto.id in motorcyclesObj)) {
+			motorcyclesObj[moto.id] = moto;
+		}
+	});
+
+	return transactions.map(trans => {
+		const { id, clientId, createdAt } = trans;
+
+		const client = clientsObj[clientId];
+
+		const decodedMotos = trans.motorcycles.split(',').map(moto => {
+			const [id, quantity] = moto.split(':').map(Number);
+			return { id, quantity };
+		});
+
+		const motorcycles = decodedMotos.map(m => {
+			const motorcycle = motorcyclesObj[m.id];
+
+			return { ...motorcycle, quantity: m.quantity };
+		});
+
+		const total = motorcycles.reduce(
+			(acc, moto) => acc + moto.price * moto.quantity,
+			0
+		);
+
+		const result = {
+			id,
+			client,
+			motorcycles,
+			total,
+			createdAt,
+			// createdAt: new Date(Date.parse(trans.createdAt)),
+		};
+
+		return result;
+	}) as CompleteTransaction[];
+}
+
+
+>>>>  /src/lib/prismaClient.ts  <<<<
+
+import { PrismaClient } from '@prisma/client';
+
+export const prismaClient = new PrismaClient();
+
+
+>>>>  /src/lib/schemas.ts  <<<<
+
+import * as Yup from 'yup';
+
+export const clientSchema = Yup.object({
+	firstName: Yup.string().required('Nome é obrigatório'),
+	lastName: Yup.string().required('Sobrenome é obrigatório'),
+	email: Yup.string()
+		.email('Insira um email válido')
+		.required('Email é obrigatório'),
+});
+
+export const motorcycleSchema = Yup.object({
+	name: Yup.string().required('Nome é obrigatório'),
+	description: Yup.string(),
+	year: Yup.number()
+		.min(1920)
+		.max(new Date().getFullYear())
+		.required('Ano é obrigatório'),
+	price: Yup.number().min(1000).required('Preço é obrigatório'),
+	imgURL: Yup.string().matches(
+		/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/,
+		'insira uma url válida'
+	),
+});
+
+export const transactionSchema = Yup.object({
+	clientId: Yup.string().required('Selectione um cliente'),
+	motorcycles: Yup.array().of(
+		Yup.object().shape({
+			id: Yup.string().required(),
+			quantity: Yup.number().integer().min(1).required(),
+		})
+	),
+});
+
+
+>>>>  /src/styles/animations.css  <<<<
+
+
+
+>>>>  /src/styles/clients.css  <<<<
+
+/********** clients *************/
+p.email {
+	font-size: 16px;
+	font-weight: 600;
+	margin-block: 0.5rem;
+}
+
+
+>>>>  /src/styles/globals.css  <<<<
+
+/********** The switch - the box around the slider *************/
+:root {
+	--toggle-thumb-diameter: 20px;
+	--toggle-height: 28px;
+	--toggle-width: 54px;
+
+	--lg-text: 15px;
+	--normal-text: 13px;
+	--small-text: 11px;
+
+	--bg-color: #333;
+	--bg: #282c34;
+	--dark-bg: #191a1b;
+	--shadow: #31363f;
+
+	--text-color: #efe;
+	--alt-text: #cdcdcd;
+	--alt-text-light: #696060;
+
+	--accent: goldenrod;
+	--danger: #b71c1c;
+
+	--modal-width: 450px;
+}
+* {
+	box-sizing: border-box;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+body {
+	padding: 0;
+
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+		'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+		'Helvetica Neue', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	background-color: var(--bg-color);
+	-moz-osx-font-smoothing: grayscale;
+	background-color: var(--bg);
+
+	color: var(--text-color);
+	font-size: min(calc(8px + 2vmin), 22px);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+h1 {
+	padding-left: 2rem;
+}
+
+h5 {
+	margin: 0;
+}
+
+p {
+	font-size: var(--normal-text);
+	margin: 0;
+}
+p.bold {
+	font-weight: 600;
+}
+
+ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+table {
+	/* border: 1px solid; */
+	margin: auto;
+}
+
+th,
+td {
+	font-size: 0.8rem;
+	padding-inline: 0.25rem;
+}
+
+button {
+	cursor: pointer;
+	border: none;
+	transition: opacity 0.5s;
+	padding: 0.5rem;
+	border-radius: 1rem;
+	background-color: var(--accent);
+	color: #fff;
+	font-weight: 600;
+}
+
+button:hover {
+	opacity: 0.7;
+}
+
+button[title^='deletar'] {
+	background-color: var(--danger);
+}
+
+form {
+	margin: 0 auto;
+}
+
+input,
+select {
+	color: var(--alt-text);
+	background-color: var(--dark-bg);
+	outline-color: rgba(62, 130, 139, 0.3);
+	padding: 0.4rem;
+}
+
+input::placeholder,
+select ::placeholder {
+	color: var(--alt-text);
+}
+
+.App {
+	min-height: 100vh;
+	display: flex;
+	color: white;
+	margin: 0 auto;
+}
+
+.page-container {
+	margin: 0 auto;
+	padding-top: 2rem;
+	margin-bottom: 54px;
+}
+
+.banner {
+	background: url('/banner-min.jpg') no-repeat fixed center;
+
+	width: 100vw;
+	height: 70vh;
+	box-shadow: 43px 43px 95px #1f2229, -13px -3px 55px var(--shadow);
+}
+
+
+>>>>  /src/styles/home.css  <<<<
+
+
+
+>>>>  /src/styles/motos.css  <<<<
+
+/********** motorcycles *************/
+.motorcycle-container {
+	/********** border: 2px solid red; *************/
+	min-width: 400px;
+}
+
+.motorcycle-container img {
+	height: 42px;
+	width: 60px;
+}
+
+.preview-container img {
+	width: 300px;
+	height: 160px;
+}
+
+
+>>>>  /src/styles/shared.css  <<<<
+
+/****************************/
+/********** nav *************/
+/****************************/
+.nav-container {
+	width: 100vw;
+	padding: 0.5rem 1rem;
+	/* height: 38px; */
+	position: fixed;
+	background: var(--dark-bg);
+	top: 0;
+	display: flex;
+	justify-content: space-between;
+	z-index: 2;
+}
+
+.nav-container > span {
+	display: flex;
+}
+
+.nav-container > span > span {
+	margin-inline: 0.15rem;
+}
+
+.nav-link {
+	color: #fff;
+	cursor: pointer;
+}
+.nav-link.active {
+	color: var(--accent);
+}
+
+/****************************/
+/******** text-field ********/
+/****************************/
+.text-field-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.text-field-container label {
+	font-size: var(--normal-text);
+}
+
+.text-field-container input {
+	border-radius: 4px;
+}
+
+.error-message {
+	font-size: var(--small-text);
+	color: var(--accent);
+}
+
+.number-field-container {
+	display: flex;
+	flex-direction: column;
+	width: 40px;
+}
+
+/****************************/
+/********** slide toggle *************/
+/****************************/
+
+.slide-toggle-container .switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+/* The slider */
+.slide-toggle-container .slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
+}
+
+.slide-toggle-container .slider:before {
+	position: absolute;
+	content: '';
+	height: var(--toggle-thumb-diameter);
+	width: var(--toggle-thumb-diameter);
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
+}
+
+.slide-toggle-container input:checked + .slider {
+	background-color: var(--primary);
+}
+
+.slide-toggle-container input:focus + .slider {
+	box-shadow: 0 0 1px var(--primary);
+}
+
+.slide-toggle-container input:checked + .slider:before {
+	-webkit-transform: translateX(26px);
+	-ms-transform: translateX(26px);
+	transform: translateX(26px);
+}
+
+.slide-toggle-container .slider.round {
+	/* Rounded sliders*/
+	border-radius: 34px;
+}
+
+.slide-toggle-container .slider.round:before {
+	border-radius: 50%;
+}
+
+/****************************/
+/********** select *************/
+/****************************/
+
+.select-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.select-container label,
+.number-field-container label {
+	font-size: var(--normal-text);
+}
+
+.select-container .dropdown-select {
+	/* background-color: red;*/
+	display: flex;
+}
+
+/****************************/
+/****************************/
+/****************************/
+
+.app-form {
+	padding: 2rem;
+	border-radius: 8px;
+	background: #282c34;
+	transition: 0.3s;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px var(--shadow);
+	min-height: 300px;
+}
+
+.new-form-container.open {
+	padding: 2rem;
+	border-radius: 8px;
+	background: #282c34;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px var(--shadow);
+	min-width: 300px;
+	min-height: 400px;
+}
+
+.new-form-container {
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	bottom: 2rem;
+	right: 2rem;
+}
+
+.new-form-container .new-form-button.open {
+	border-radius: 50%;
+	height: 64px;
+	width: 64px;
+	background-color: var(--accent);
+}
+
+.new-form-container .open svg {
+	width: 2rem;
+	height: 2rem;
+	stroke-width: 4px;
+	color: #fff;
+}
+
+.new-form-container .new-form-button.close {
+	background-color: transparent;
+	width: 46px;
+}
+
+.new-form-container .new-form-button.close svg {
+	width: 2rem;
+	height: 2rem;
+	stroke-width: 2px;
+	color: var(--alt-text);
+}
+
+/****************************/
+/****************************/
+/****************************/
+
+.app-card {
+	padding: 1rem;
+	margin: 1rem;
+	border-radius: 8px;
+	background: #282c34;
+	cursor: pointer;
+	transition: 0.3s;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px var(--shadow);
+}
+
+.app-card:hover {
+	opacity: 0.7;
+}
+
+.app-modal {
+	background-color: var(--bg);
+	width: var(--modal-width);
+	text-align: center;
+	/* display: flex; */
+	/* flex-direction: column; */
+	position: fixed;
+	z-index: 99999;
+	min-height: 400px;
+	top: 0;
+	left: 0;
+	top: 200px;
+	left: calc(50vw - var(--modal-width) / 2);
+}
+
+.app-modal header {
+	text-align: right;
+	padding: 0.5rem 1rem;
+}
+
+.app-modal main {
+	padding: 1rem;
+}
+.app-modal img {
+	/* width: 300px; */
+	height: 180px;
+	border-radius: 6px;
+}
+
+.app-modal-overlay {
+	background-color: rgba(62, 130, 139, 0.3);
+	width: 1000vw;
+	height: 1000vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 999;
+}
+
+/****************************/
+/****************************/
+/****************************/
+
+.list-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media screen and (max-width: 1286px) {
+	.list-container {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media screen and (max-width: 720px) {
+	.list-container {
+		grid-template-columns: 1fr;
+	}
+}
+
+
+>>>>  /src/styles/transactions.css  <<<<
+
+/********** transactions *************/
+.transactions-page-container {
+	padding-top: 6rem;
+	transition: 0.2s;
+	margin-bottom: 54px;
+}
+
+.search-input-container {
+	border: 1px solid;
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100vw;
+	background-color: var(--bg);
+	z-index: 1;
+}
+
+.search-input {
+	position: fixed;
+	top: 64px;
+	left: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #fff;
+	border-radius: 06px;
+	width: 400px;
+	margin: 0 auto;
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px var(--shadow);
+	transition: 0.7s;
+}
+
+.search-input .search-input-icon {
+	position: relative;
+	color: var(--bg);
+	display: flex;
+}
+
+.search-input input {
+	background-color: transparent;
+	border: none;
+	width: 100%;
+	height: 32px;
+}
+
+.transaction-search-input {
+	color: var(--dark-bg);
+}
+.transaction-search-input::placeholder {
+	color: rgb(120, 122, 125);
+}
+
+.transaction-item {
+	background-color: rgb(60, 64, 76);
+}
+
+.form-row {
+	display: flex;
+}
+
+.transaction-container {
+	padding: 2rem 1rem;
+}
+
+.transaction-container .transaction-itens-ul li p {
+	text-align: right;
+}
+
+li.transaction-li {
+	/* border: 1px solid;*/
+	box-shadow: 23px 23px 45px #1f2229, -23px -23px 45px var(--shadow);
+	border-radius: 12px;
+	padding: 0.5rem 1.5rem;
+	margin-bottom: 1rem;
+}
+
+li.transaction-li .moto-details {
+	display: flex;
+	justify-content: space-between;
+}
+
+li.transaction-li img.transaction-img {
+	height: 60px;
+}
+
+@media screen and (max-width: 720px) {
+	.search-input {
+		left: 12px;
+	}
+}
+
+@media screen and (max-width: 450px) {
+	.search-input {
+		left: 0px;
+	}
+	.transactions-page-container {
+		padding-top: 7rem;
+	}
+}
+
+
+>>>>  /src/components/Home/index.tsx  <<<<
+
+/* eslint-disable @next/next/no-img-element */
+import * as React from 'react';
+
+const Home = () => {
+	return (
+		<div className="page-container">
+			<h1>Home</h1>
+			<div className="banner"></div>
+		</div>
+	);
+};
+
+export default Home;
+
+
+>>>>  /src/components/Clients/.DS_Store  <<<<
+
+
+
+>>>>  /src/components/Clients/ClientDetails.tsx  <<<<
+
+import { Client } from '@prisma/client';
+import { useContext, useState } from 'react';
+import { FiEdit, FiTrash, FiX } from 'react-icons/fi';
+import { DataContext } from '../../contexts/DataContext';
+import { capitalize, toCurrency, toDate } from '../../lib/helpers';
+import DetailsModal from '../shared/DetailsModal';
+import ClientForm from './ClientForm';
+
+interface IProps {
+	client: Client;
+	onClose: (e: any) => void;
+	onDelete: (id: number) => void;
+}
+export default function ClientDetails({ client, onClose, onDelete }: IProps) {
+	const { id, email, firstName, lastName } = client;
+	const { transactions } = useContext(DataContext);
+
+	const [editingMode, setEditingMode] = useState(false);
+
+	const clientTransactions = transactions.filter(
+		transaction => transaction.client.id === id
+	);
+	const totalSpent = clientTransactions.reduce(
+		(acc, item) => (acc += item.total),
+		0
+	);
+
+	return (
+		<DetailsModal onClose={onClose}>
+			<button onClick={() => onDelete(id)} title="deletar usuário">
+				<FiTrash />
+			</button>
+
+			{editingMode ? (
+				<>
+					<button onClick={() => setEditingMode(false)}>
+						<FiX />
+					</button>
+
+					<ClientForm
+						mode="edit"
+						client={client}
+						onSubmitted={() => setEditingMode(false)}
+					/>
+				</>
+			) : (
+				<>
+					<button
+						onClick={() => setEditingMode(true)}
+						title="editar usuário"
+					>
+						<FiEdit />
+					</button>
+
+					<h5>
+						{capitalize(firstName)} {capitalize(lastName)}
+					</h5>
+
+					<p>id: {id}</p>
+
+					<p>Email: {email}</p>
+
+					<br />
+
+					{clientTransactions.length > 0 && (
+						<>
+							<p>Compras de {firstName}</p>
+							<table>
+								<thead>
+									<th></th>
+									<th>Valor Compra</th>
+									<th>Data e hora</th>
+								</thead>
+								<tbody>
+									{clientTransactions.map(
+										(transaction, i) => {
+											const { total, createdAt } =
+												transaction;
+
+											return (
+												<tr key={transaction.id}>
+													<td>{i + 1}</td>
+													<td>{toCurrency(total)}</td>
+													<td>{toDate(createdAt)}</td>
+												</tr>
+											);
+										}
+									)}
+								</tbody>
+							</table>
+							<h4>Total gasto: {toCurrency(totalSpent)}</h4>
+						</>
+					)}
+				</>
+			)}
+		</DetailsModal>
+	);
+}
+
+
+>>>>  /src/components/Clients/ClientForm.tsx  <<<<
+
+import { Client } from '@prisma/client';
+import { Form, Formik, FormikProps } from 'formik';
+import { nanoid } from 'nanoid';
+import { useContext } from 'react';
+import { DataContext } from '../../contexts/DataContext';
+import { clientSchema } from '../../lib/schemas';
+import TextField from '../shared/TextField';
+
+interface ClientFormProps {
+	mode: 'create' | 'edit';
+	onSubmitted: () => void;
+	client?: Client;
+}
+export default function CreateClientForm({
+	mode,
+	onSubmitted,
+	client,
+}: ClientFormProps) {
+	const { createClient, updateClient } = useContext(DataContext);
+
+	let clientID = 0;
+	if (mode === 'edit' && client) clientID = client.id;
+
+	return (
+		<div>
+			<h5>Cadastrar Cliente</h5>
+
+			<Formik
+				initialValues={{
+					firstName: client?.firstName || '',
+					lastName: client?.lastName || '',
+					email: client?.email || '',
+				}}
+				validationSchema={clientSchema}
+				onSubmit={async (values, actions) => {
+					console.log({ values, actions });
+
+					if (mode === 'create') await createClient(values);
+					if (mode === 'edit')
+						await updateClient({ ...values, id: clientID });
+
+					onSubmitted();
+				}}
+				enableReinitialize={true}
+			>
+				{({ errors, touched }: FormikProps<Partial<Client>>) => {
+					return (
+						<Form>
+							<TextField
+								id={nanoid()}
+								name="firstName"
+								label="Nome"
+								placeholder="Nome"
+								error={Boolean(
+									errors.firstName && touched.firstName
+								)}
+								errorMessage={errors.firstName}
+							/>
+							<TextField
+								id={nanoid()}
+								name="lastName"
+								placeholder="Sobrenome"
+								label="Sobrenome"
+								error={Boolean(
+									errors.lastName && touched.lastName
+								)}
+								errorMessage={errors.lastName}
+							/>
+							<TextField
+								id={nanoid()}
+								name="email"
+								label="Email"
+								placeholder="email"
+								error={Boolean(errors.email && touched.email)}
+								errorMessage={errors.email}
+							/>
+
+							<button type="submit">Salvar</button>
+						</Form>
+					);
+				}}
+			</Formik>
+		</div>
+	);
+}
+
+// initialValues={
+// 	mode === 'create' && !client
+// 		? { firstName: '', lastName: '', email: '' }
+// 		: {
+// 				firstName: client?.firstName,
+// 				lastName: client?.lastName,
+// 				email: client?.firstName,
+// 		  }
+// }
+
+
+>>>>  /src/components/Clients/ClientItem.tsx  <<<<
+
+import { Client } from '@prisma/client';
+import { useState } from 'react';
+import ClientDetails from './ClientDetails';
+
+interface ClientItemProps {
+	client: Client;
+	onDelete: (id: number) => void;
+}
+
+export default function ClientItem({ client, onDelete }: ClientItemProps) {
+	const { firstName, lastName, email } = client;
+
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+	const handleDetailsModalOpen = (e: any) => {
+		setIsModalOpen(true);
+	};
+	const handleDetailsModalClose = (e: any) => {
+		e.stopPropagation();
+		setIsModalOpen(false);
+	};
+
+	return (
+		<>
+			<div
+				className="client-container app-card"
+				onClick={handleDetailsModalOpen}
+			>
+				<h5>
+					{firstName} {lastName}
+				</h5>
+				<p>{email}</p>
+			</div>
+			{isModalOpen && (
+				<ClientDetails
+					client={client}
+					onClose={handleDetailsModalClose}
+					onDelete={onDelete}
+				/>
+			)}
+		</>
+	);
+}
+
+
+>>>>  /src/components/Clients/ClientsList.tsx  <<<<
+
+import { Client } from '@prisma/client';
+import React, { useContext } from 'react';
+import { DataContext } from '../../contexts/DataContext';
+import ClientItem from './ClientItem';
+
+interface ClientsListProps {
+	clients: Client[];
+}
+
+export default function ClientsList({ clients }: ClientsListProps) {
+	const { isLoading, deleteClient } = useContext(DataContext);
+
+	const handleDeleteClient = (id: number) => {
+		deleteClient(id);
+	};
+
+	return (
+		<div className="clients-list list-container">
+			{clients.map(client => (
+				<ClientItem
+					key={client.id}
+					client={client}
+					onDelete={handleDeleteClient}
+				/>
+			))}
+
+			{isLoading && <div>Loading....</div>}
+		</div>
+	);
+}
+
+
+>>>>  /src/components/Clients/CreateClient.tsx  <<<<
+
+import { useState } from 'react';
+import { FiPlus, FiX } from 'react-icons/fi';
+import CreateClientForm from './ClientForm';
+
+export default function CreateClient() {
+	const [isFormShown, setIsFormShown] = useState(false);
+
+	const handleCreateClientClick = (isFormShown: boolean) => (e: any) => {
+		setIsFormShown(!isFormShown);
+	};
+
+	return (
+		<div className={`new-form-container ${isFormShown ? 'open' : 'close'}`}>
+			<button
+				className={`new-form-button ${isFormShown ? 'close' : 'open'}`}
+				onClick={handleCreateClientClick(isFormShown)}
+				title="cadastrar novo cliente"
+			>
+				{isFormShown ? <FiX /> : <FiPlus />}
+			</button>
+
+			{isFormShown && (
+				<CreateClientForm
+					mode="create"
+					onSubmitted={() => setIsFormShown(false)}
+				/>
+			)}
+		</div>
+	);
+}
+
+
+>>>>  /src/components/Transactions/.DS_Store  <<<<
+
+
+
+>>>>  /src/components/Transactions/CreateTransaction.tsx  <<<<
+
+import { useEffect, useState } from 'react';
+import { FiPlus, FiX } from 'react-icons/fi';
+import TransactionForm from './TransactionForm';
+
+export default function CreateTransaction() {
+	const [isFormShown, setIsFormShown] = useState(false);
+
+	const handleCreateClientClick = (isFormShown: boolean) => (e: any) => {
+		setIsFormShown(!isFormShown);
+	};
+
+	useEffect(() => console.log('form shown?', isFormShown), [isFormShown]);
+
+	return (
+		<div className={`new-form-container ${isFormShown ? 'open' : 'close'}`}>
+			<button
+				className={`new-form-button ${isFormShown ? 'close' : 'open'}`}
+				onClick={handleCreateClientClick(isFormShown)}
+			>
+				{isFormShown ? <FiX /> : <FiPlus />}
+			</button>
+
+			{isFormShown && (
+				<TransactionForm onSubmitted={() => setIsFormShown(false)} />
+			)}
+		</div>
+	);
+}
+
+
+>>>>  /src/components/Transactions/TransactionDetails.tsx  <<<<
+
+/* eslint-disable @next/next/no-img-element */
+import { nanoid } from 'nanoid';
+import { useState } from 'react';
+import { FiEdit, FiTrash, FiX } from 'react-icons/fi';
+import { CompleteTransaction, toCurrency } from '../../lib/helpers';
+import DetailsModal from '../shared/DetailsModal';
+import TransactionForm from './TransactionForm';
+
+interface IProps {
+	transaction: CompleteTransaction;
+	onClose: (e: any) => void;
+	onDelete: (id: number) => void;
+}
+
+export default function TransactionDetails({
+	transaction,
+	onClose,
+	onDelete,
+}: IProps) {
+	const { client, motorcycles, id, createdAt, total } = transaction;
+
+	const [editingMode, setEditingMode] = useState(false);
+
+	return (
+		<DetailsModal onClose={onClose}>
+			<>
+				<button onClick={() => onDelete(id)} title="deletar venda">
+					<FiTrash />
+				</button>
+
+				{editingMode ? (
+					<>
+						<button onClick={() => setEditingMode(false)}>
+							<FiX />
+						</button>
+						<TransactionForm
+							transaction={transaction}
+							onSubmitted={onClose}
+						/>
+					</>
+				) : (
+					<>
+						<button onClick={() => setEditingMode(true)}>
+							<FiEdit />
+						</button>
+
+						<h5>
+							{client.firstName} {client.lastName}
+							<p>{id}</p>
+						</h5>
+
+						{Object.entries(client).map(([k, v]) => (
+							<p key={nanoid()}>
+								<span className="key">{k}</span>:{v}
+							</p>
+						))}
+
+						<hr />
+						{motorcycles.map(moto => {
+							const { name, price, year, imgURL, quantity } =
+								moto;
+
+							return (
+								<ul key={nanoid()}>
+									<li className="transaction-li">
+										<p>Mototocicleta: {name}</p>
+
+										<div className="moto-details">
+											<img
+												className="transaction-img"
+												src={imgURL}
+												alt="moto"
+											/>
+											<div>
+												<p>
+													valor: {toCurrency(price)}
+												</p>
+												<p>ano: {year}</p>
+												<p>qtd. {quantity}x</p>
+											</div>
+										</div>
+									</li>
+								</ul>
+							);
+						})}
+
+						<p>TOTAL: {toCurrency(total)}</p>
+						<br />
+					</>
+				)}
+			</>
+		</DetailsModal>
+	);
+}
+
+
+>>>>  /src/components/Transactions/TransactionForm.tsx  <<<<
+
+import { ErrorMessage, FieldArray, Form, Formik, FormikProps } from 'formik';
+import { nanoid } from 'nanoid';
+import { useContext } from 'react';
+import { FiPlus, FiTrash } from 'react-icons/fi';
+import { DataContext } from '../../contexts/DataContext';
+import {
+	CompleteTransaction,
+	FormTransaction,
+	toCurrency,
+} from '../../lib/helpers';
+import { transactionSchema } from '../../lib/schemas';
+import DropdownField, { IDropdownOption } from '../shared/DropdownField';
+import NumberField from '../shared/NumberField';
+
+interface IProps {
+	transaction?: CompleteTransaction;
+	onSubmitted: (e: any) => void;
+}
+
+export default function TransactionForm({ transaction, onSubmitted }: IProps) {
+	const { clients, motorcycles, createTransaction, updateTransaction } =
+		useContext(DataContext);
+
+	let transactionID = 0;
+	if (transaction) transactionID = transaction.id;
+
+	const clientOpts: IDropdownOption[] = [
+		{ id: 0, name: '', value: '' },
+		...clients.map(client => ({
+			id: client.id,
+			name: `${client.firstName} ${client.lastName}`,
+			value: client.id,
+		})),
+	];
+
+	const motorcycleOpts: IDropdownOption[] = [
+		{ id: 0, name: '', value: '' },
+		...motorcycles.map(motorcycle => ({
+			id: motorcycle.id,
+			name: motorcycle.name,
+			value: motorcycle.id,
+		})),
+	];
+
+	const getMoto = (id: number) => motorcycles.find(moto => moto.id === id);
+
+	const getTotal = (motos: { id: number; quantity: number }[]) => {
+		console.log(motos);
+		// return 0;
+		return motos.reduce(
+			(acc, moto) =>
+				(acc += (getMoto(Number(moto.id))?.price || 0) * moto.quantity),
+			0
+		);
+	};
+
+	return (
+		<Formik
+			initialValues={{
+				clientId: transaction?.client?.id || 0,
+				motorcycles: transaction?.motorcycles
+					? transaction?.motorcycles.map(item => ({
+							id: item.id,
+							quantity: item.quantity,
+					  }))
+					: [{ id: 0, quantity: 1 }],
+				total: transaction?.total || 0,
+			}}
+			validationSchema={transactionSchema}
+			onSubmit={async (values, actions) => {
+				const { resetForm } = actions;
+
+				transactionID
+					? await updateTransaction({
+							id: transactionID,
+							clientId: values.clientId,
+							motorcycles: values.motorcycles,
+							total: getTotal(values.motorcycles),
+					  })
+					: await createTransaction({
+							clientId: values.clientId,
+							motorcycles: values.motorcycles,
+							total: getTotal(values.motorcycles),
+					  });
+
+				// resetForm();
+
+				const event = new Event('submit', { bubbles: true });
+				onSubmitted(event);
+			}}
+		>
+			{({
+				errors,
+				values,
+				handleBlur,
+				handleChange,
+			}: FormikProps<FormTransaction>) => {
+				return (
+					<Form>
+						<h5>Cadastrar Venda</h5>
+
+						<DropdownField
+							id={nanoid()}
+							name="clientId"
+							label="Cliente"
+							placeholder="Selecione o cliente"
+							options={clientOpts}
+							onChange={handleChange}
+						/>
+						<div className="error-message">{errors.clientId}</div>
+						{values.clientId ? (
+							<FieldArray name="motorcycles">
+								{arrayHelpers => {
+									return (
+										<div className="motorcycles-list">
+											{values?.motorcycles &&
+											values.motorcycles.length > 0 ? (
+												<>
+													{/* prettier-ignore */}
+													{values.motorcycles.map(
+														(moto, i) => (
+															<div
+																key={nanoid()}
+																className="transaction-item"
+															>
+																{/* prettier-ignore */}
+																<div className="form-row">
+																<DropdownField
+																	id={nanoid()}
+																	name={`motorcycles[${i}].id`}
+																	placeholder="selecione motocicleta"
+																	label={`Moto ${
+																		i < 9
+																		? '0' + (i + 1)
+																		: i + 1
+																	}`}
+																	options={motorcycleOpts}
+																	onChange={handleChange}
+																>
+																	<ErrorMessage
+																		name={`motorcycles[${i}].id`}
+																		render={() => (
+																			<div className="error-message">
+																				selecione uma moto
+																			</div>
+																		)}
+																	/>
+																</DropdownField>
+																<NumberField
+																	id={nanoid()}
+																	name={`motorcycles[${i}].quantity`}
+																	label="Quantidade"
+																	min={1}
+																	handleBlur={handleBlur}
+																	handleChange={handleChange}
+																	value={values.motorcycles[i].quantity}
+																/>
+																<div
+																	style={{
+																		paddingTop: `1rem`,
+																	}}
+																>
+																	<button
+																		type="button"
+																		title="deletar item"
+																		onClick={() => arrayHelpers.remove(i)}
+																	>
+																		<FiTrash />
+																	</button>
+																</div>
+															</div>
+															</div>
+														)
+													)}
+												</>
+											) : null}
+											<button
+												style={{
+													marginBlock: 10,
+												}}
+												type="button"
+												id="add-moto-btn"
+												onClick={() =>
+													arrayHelpers.push({
+														id: '',
+														quantity: 1,
+													})
+												}
+											>
+												<FiPlus />
+											</button>
+											<label
+												htmlFor="add-moto-btn"
+												style={{
+													paddingLeft: 5,
+													fontSize: '11px',
+													color: 'goldenrod',
+												}}
+											>
+												adicionar moto
+											</label>
+										</div>
+									);
+								}}
+							</FieldArray>
+						) : null}
+						<button type="submit">
+							{transactionID ? 'Editar venda' : 'Registrar venda'}
+						</button>
+
+						<div>
+							<p>
+								Total:{' '}
+								{toCurrency(getTotal(values.motorcycles))}
+							</p>
+						</div>
+					</Form>
+				);
+			}}
+		</Formik>
+	);
+}
+
+
+>>>>  /src/components/Transactions/TransactionItem.tsx  <<<<
+
+import { nanoid } from 'nanoid';
+import { useState } from 'react';
+import { CompleteTransaction, toCurrency, toDate } from '../../lib/helpers';
+import TransactionDetails from './TransactionDetails';
+
+interface IProps {
+	transaction: CompleteTransaction;
+	onDelete: (id: number) => void;
+}
+
+export default function TransactionItem({ transaction, onDelete }: IProps) {
+	const { id, client, createdAt, total, motorcycles } = transaction;
+	const { firstName = '', lastName = '' } = client;
+
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+	const handleDetailsModalOpen = (e: any) => {
+		setIsModalOpen(true);
+	};
+	const handleDetailsModalClose = (e: any) => {
+		e.stopPropagation();
+		setIsModalOpen(false);
+	};
+
+	return (
+		<>
+			<div
+				className="transaction-container app-card"
+				onClick={handleDetailsModalOpen}
+			>
+				<p>Cliente: {`${firstName} ${lastName}`}</p>
+
+				<ul className="transaction-itens-ul">
+					<li>
+						<p>Itens:</p>
+					</li>
+
+					{motorcycles.length > 0 &&
+						motorcycles.map(moto => {
+							const {
+								quantity,
+								name = '',
+								imgURL = '',
+								price = 0,
+							} = moto;
+
+							return (
+								<li key={nanoid()}>
+									<p>
+										{name} {toCurrency(price)}
+										{quantity > 1 && (
+											<span>
+												{
+													/* prettier-ignore */
+													` x${quantity} (${toCurrency(price * quantity)})`
+												}
+											</span>
+										)}
+									</p>
+								</li>
+							);
+						})}
+				</ul>
+				<p>Total: {toCurrency(total)}</p>
+
+				<hr />
+				<p>Data Pedido: {toDate(createdAt)}</p>
+
+				<p>Id Pedido: {id}</p>
+			</div>
+
+			{isModalOpen && (
+				<TransactionDetails
+					transaction={transaction}
+					onClose={handleDetailsModalClose}
+					onDelete={onDelete}
+				/>
+			)}
+		</>
+	);
+}
+
+
+>>>>  /src/components/Transactions/TransactionsList.tsx  <<<<
+
+import { useContext } from 'react';
+import { DataContext } from '../../contexts/DataContext';
+import { CompleteTransaction } from '../../lib/helpers';
+import Transaction from './TransactionItem';
+
+interface IProps {
+	transactions: CompleteTransaction[];
+}
+
+export default function TransactionList({ transactions }: IProps) {
+	const { deleteTransaction } = useContext(DataContext);
+
+	const handleDeleteTransaction = (id: number) => {
+		deleteTransaction(id);
+	};
+
+	return (
+		<ul className="list-container">
+			{transactions.map(transaction => (
+				<Transaction
+					key={transaction.id}
+					transaction={transaction}
+					onDelete={handleDeleteTransaction}
+				/>
+			))}
+		</ul>
+	);
+}
+
+
+>>>>  /src/components/Transactions/TransactionsSearch.tsx  <<<<
+
+import { FiSearch } from 'react-icons/fi';
+
+interface CompleteTransactionSearchProps {
+	onChange: (value: string) => void;
+}
+
+const placeholder = 'Filtrar vendas por nome, moto ou valor';
+
+export default function TransactionsSearch({
+	onChange,
+}: CompleteTransactionSearchProps) {
+	const handleChange = (e: any) => onChange(e.target.value.trim());
+	return (
+		<>
+			<div className="search-input">
+				<div className="search-input-icon">
+					<FiSearch size={24} />
+				</div>
+				<input
+					type="text"
+					onChange={handleChange}
+					placeholder={placeholder}
+					className="transaction-search-input"
+				></input>
+			</div>
+		</>
+	);
+}
+
+
+>>>>  /src/components/Motorcycles/.DS_Store  <<<<
+
+
+
+>>>>  /src/components/Motorcycles/CreateMotorcycle.tsx  <<<<
+
+import { useState } from 'react';
+import { FiPlus, FiX } from 'react-icons/fi';
+import CreateMotorcycleForm from './MotorcycleForm';
+
+export default function CreateMotorcycle() {
+	const [isFormShown, setIsFormShown] = useState(false);
+
+	const handleCreateMotorcycleClick = (isFormShown: boolean) => (e: any) => {
+		setIsFormShown(!isFormShown);
+	};
+
+	return (
+		<div className={`new-form-container ${isFormShown ? 'open' : 'close'}`}>
+			<button
+				className={`new-form-button ${isFormShown ? 'close' : 'open'}`}
+				onClick={handleCreateMotorcycleClick(isFormShown)}
+			>
+				{isFormShown ? <FiX /> : <FiPlus />}
+			</button>
+
+			{isFormShown && (
+				<CreateMotorcycleForm
+					onSubmitted={() => setIsFormShown(false)}
+				/>
+			)}
+		</div>
+	);
+}
+
+
+>>>>  /src/components/Motorcycles/MotorcycleDetails.tsx  <<<<
+
+import { Motorcycle } from '@prisma/client';
+import { useState } from 'react';
+import { FiEdit, FiTrash, FiX } from 'react-icons/fi';
+import { toCurrency } from '../../lib/helpers';
+import DetailsModal from '../shared/DetailsModal';
+import MotorcycleForm from './MotorcycleForm';
+
+interface IProps {
+	motorcycle: Motorcycle;
+	onClose: (e: any) => void;
+	onDelete: (id: number) => void;
+}
+export default function MotorcycleDetails({
+	motorcycle,
+	onClose,
+	onDelete,
+}: IProps) {
+	const { id, name, description, year, price, imgURL } = motorcycle;
+
+	const [editingMode, setEditingMode] = useState(false);
+
+	return (
+		<DetailsModal onClose={onClose}>
+			<button onClick={() => onDelete(id)} title="deletar motocicleta">
+				<FiTrash />
+			</button>
+
+			{editingMode ? (
+				<>
+					<button onClick={() => setEditingMode(false)}>
+						<FiX />
+					</button>
+
+					<MotorcycleForm motorcycle={motorcycle} />
+				</>
+			) : (
+				<>
+					<button onClick={() => setEditingMode(true)}>
+						<FiEdit />
+					</button>
+					<h5>
+						{name}
+						<p>{year}</p>
+					</h5>
+					<p>{description}</p>
+
+					<img src={imgURL} />
+					<p>{toCurrency(price)}</p>
+				</>
+			)}
+		</DetailsModal>
+	);
+}
+
+
+>>>>  /src/components/Motorcycles/MotorcycleForm.tsx  <<<<
+
+import { Motorcycle } from '@prisma/client';
+import { Form, Formik, FormikProps } from 'formik';
+import { nanoid } from 'nanoid';
+import { useContext } from 'react';
+import { DataContext } from '../../contexts/DataContext';
+import { defaultMotoImgURL } from '../../lib/constants';
+import { motorcycleSchema } from '../../lib/schemas';
+import TextField from '../shared/TextField';
+
+interface MotorcyclesFormProps {
+	motorcycle?: Motorcycle;
+	onSubmitted: () => void;
+}
+
+export default function MotorcycleForm({
+	motorcycle,
+	onSubmitted,
+}: MotorcyclesFormProps) {
+	const { createMotorcycle, updateMotorcycle } = useContext(DataContext);
+
+	let motoId = 0;
+	if (motorcycle) motoId = motorcycle.id;
+
+	return (
+		<div>
+			<h5>Cadastrar Moto</h5>
+
+			{/* prettier-ignore */}
+			<Formik
+				initialValues={{
+					name: motorcycle?.name || '',
+					description: motorcycle?.description || '',
+					year: motorcycle?.year || 2022,
+					price: motorcycle?.price || 0,
+					imgURL: motorcycle?.imgURL || defaultMotoImgURL,
+				}}
+				validationSchema={motorcycleSchema}
+				onSubmit={async (values, actions) => {
+					console.log({ values, actions });
+
+					if (motoId) await updateMotorcycle({ ...values, id: motoId });
+					if (!motoId) await createMotorcycle(values);
+
+					onSubmitted()
+				}}
+			>
+				{({ errors, touched, values }: FormikProps<Partial<Motorcycle>>) => { 
+					return (
+						<Form>
+							<TextField
+								id={nanoid()}
+								name="name"
+								label="Nome"
+								placeholder="Nome"
+								error={Boolean(errors.name && touched.name)}
+								errorMessage={errors.name}
+							/>
+							<TextField
+								id={nanoid()}
+								name="description"
+								placeholder="Descrição"
+								label="Descrição"
+								error={Boolean(
+									errors.description && touched.description
+								)}
+								errorMessage={errors.description}
+							/>
+							<TextField
+								id={nanoid()}
+								name="year"
+								label="Ano"
+								placeholder="Ano"
+								error={Boolean(errors.year && touched.year)}
+								errorMessage={errors.year}
+							/>
+							<TextField
+								id={nanoid()}
+								name="price"
+								label="Preço"
+								placeholder="Preço"
+								error={Boolean(errors.price && touched.price)}
+								errorMessage={errors.price}
+							/>
+							<TextField
+								id={nanoid()}
+								name="imgURL"
+								label="URL Imagem"
+								placeholder="URL Imagem"
+								error={Boolean(errors.imgURL && touched.imgURL)}
+								errorMessage={errors.imgURL}
+							/>
+
+							<div className="preview-container">
+								{values.imgURL && <img src={values.imgURL} />}
+							</div>
+
+							<button type="submit">Salvar</button>
+						</Form>
+					);
+				}}
+			</Formik>
+		</div>
+	);
+}
+
+
+>>>>  /src/components/Motorcycles/MotorcyclesItem.tsx  <<<<
+
+import { Motorcycle } from '@prisma/client';
+import { useState } from 'react';
+import { toCurrency } from '../../lib/helpers';
+import MotorcycleDetails from './MotorcycleDetails';
+
+interface MotorcycleProps {
+	motorcycle: Motorcycle;
+	onDelete: (id: number) => void;
+}
+export default function MotorcycleItem({
+	motorcycle,
+	onDelete,
+}: MotorcycleProps) {
+	const { name, description, year, price, imgURL } = motorcycle;
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+	const handleDetailsModalOpen = (e: any) => {
+		setIsModalOpen(true);
+	};
+	const handleDetailsModalClose = (e: any) => {
+		e.stopPropagation();
+		setIsModalOpen(false);
+	};
+
+	// useEffect(() => console.log(isModalOpen), [isModalOpen]);
+
+	return (
+		<>
+			<div
+				className="motorcycle-container app-card"
+				onClick={handleDetailsModalOpen}
+			>
+				<h5>
+					{name}
+					<p>{year}</p>
+				</h5>
+				<p style={{ maxWidth: 280, marginBlock: '.5rem' }}>
+					{description}
+				</p>
+
+				<img src={imgURL} />
+				<p>{toCurrency(price)}</p>
+			</div>
+			{isModalOpen && (
+				<MotorcycleDetails
+					motorcycle={motorcycle}
+					onClose={handleDetailsModalClose}
+					onDelete={onDelete}
+				/>
+			)}
+		</>
+	);
+}
+
+
+>>>>  /src/components/Motorcycles/MotorcyclesList.tsx  <<<<
+
+// import Global from '../../../../hooks/Global';
+import { Motorcycle } from '@prisma/client';
+import React, { useContext } from 'react';
+import { DataContext } from '../../contexts/DataContext';
+import MotorcycleItem from './MotorcyclesItem';
+
+interface MotorcyclesListProps {
+	motorcycles: Motorcycle[];
+}
+
+const MotorcyclesList = ({ motorcycles }: MotorcyclesListProps) => {
+	const { isLoading, deleteMotorcycle } = useContext(DataContext);
+
+	const handleDeletedMotorcycle = (id: number) => {
+		deleteMotorcycle(id);
+		console.log(`delete ${id}`);
+	};
+	return (
+		<div className="motorcycles-list-container list-container">
+			{motorcycles.map(motorcycle => (
+				<MotorcycleItem
+					key={motorcycle.id}
+					motorcycle={motorcycle}
+					onDelete={handleDeletedMotorcycle}
+				/>
+			))}
+
+			{isLoading && <div>Loading....</div>}
+		</div>
+	);
+};
+
+export default MotorcyclesList;
+
+
+>>>>  /src/components/shared/.DS_Store  <<<<
+
+
+
+>>>>  /src/components/shared/DetailsModal.tsx  <<<<
+
+import { ReactNode } from 'react';
+import { FiX } from 'react-icons/fi';
+
+interface IProps {
+	onClose: (e: any) => void;
+	children: ReactNode;
+}
+
+const DetailsModal = ({ onClose, children }: IProps) => {
+	return (
+		<>
+			<div className="app-modal">
+				<header>
+					<button onClick={onClose}>
+						<FiX />
+					</button>
+				</header>
+
+				<main>{children}</main>
+			</div>
+
+			<div className="app-modal-overlay" onClick={onClose}></div>
+		</>
+	);
+};
+
+export default DetailsModal;
+
+
+>>>>  /src/components/shared/DropdownField.tsx  <<<<
+
+import { Field } from 'formik';
+import { ReactNode } from 'react';
+
+export interface IDropdownOption {
+	id: number;
+	name: string;
+	value: string | number;
+}
+
+interface ISelectProps {
+	id: string;
+	name: string;
+	label?: string;
+	placeholder?: string;
+	options: IDropdownOption[];
+	onChange: (e: any) => void;
+	children?: ReactNode;
+}
+
+export default function DropdownField({
+	id,
+	name,
+	placeholder,
+	label,
+	options,
+	children,
+}: ISelectProps) {
+	return (
+		<div className="select-container">
+			<label htmlFor="name">{label || name}</label>
+
+			<Field id={id} as="select" name={name} className="dropdown-select">
+				{options.map(option => (
+					<option
+						className="dropdown-option"
+						key={option.id}
+						value={option.value}
+					>
+						{option.name || placeholder}
+					</option>
+				))}
+			</Field>
+
+			{!!children && children}
+		</div>
+	);
+}
+
+
+>>>>  /src/components/shared/Nav.tsx  <<<<
+
+import { nanoid } from 'nanoid';
+import Link from 'next/link';
+import { useContext, useEffect } from 'react';
+import { DataContext } from '../../contexts/DataContext';
+
+const pages = [
+	{ path: '/', name: 'Home' },
+	{ path: '/Clients', name: 'Clientes' },
+	{ path: '/Motorcycles', name: 'Motos' },
+	{ path: '/Transactions', name: 'Vendas' },
+];
+
+const Nav = () => {
+	const { currentPage, setCurrentPage } = useContext(DataContext);
+
+	// const handleNavClick = e => {
+	// 	const activePage = pages.find(
+	// 		page => page.name === e.target.textContent
+	// 	)?.name;
+	// 	setCurrentPage(activePage || 'Home');
+	// };
+
+	useEffect(() => {
+		console.log({ currentPage, pages });
+	}, [currentPage]);
+
+	return (
+		<div className="nav-container">
+			<span>Unigranrio Motors</span>
+
+			<span>
+				{pages.map((page, i) => {
+					return (
+						<Link key={nanoid()} href={page.path}>
+							<span
+								key={nanoid()}
+								onClick={() => setCurrentPage(page.name)}
+								className={`nav-link ${
+									currentPage === page.name ? 'active' : ''
+								}`}
+							>
+								{page.name}
+							</span>
+						</Link>
+					);
+				})}
+			</span>
+		</div>
+	);
+};
+
+export default Nav;
+
+
+>>>>  /src/components/shared/NumberField.tsx  <<<<
+
+import { capitalize } from '../../lib/helpers';
+
+interface Props {
+	id: string;
+	name: string;
+	min: number;
+	defaultValue?: any;
+	value?: any;
+	label?: string;
+	error?: boolean;
+	errorMessage?: string;
+	handleBlur: any;
+	handleChange: any;
+}
+
+const NumberField = ({
+	label,
+	name,
+	id,
+	error,
+	min,
+	errorMessage,
+	defaultValue,
+	handleBlur,
+	handleChange,
+	value,
+}: Props) => {
+	return (
+		<div className="number-field-container">
+			<label htmlFor={name}>{capitalize(label || name)}</label>
+			<input
+				id={id}
+				type="number"
+				name={name}
+				min={min}
+				// defaultValue={defaultValue}
+				onChange={handleChange}
+				onBlur={handleBlur}
+				value={Number(value)}
+			/>
+			{error && <span className="error-message">{errorMessage}</span>}
+		</div>
+	);
+};
+
+export default NumberField;
+
+
+>>>>  /src/components/shared/SlideToggle.tsx  <<<<
+
+import { Field } from 'formik';
+
+interface SlideToggleProps {
+	id: string;
+	name: string;
+	checked: boolean;
+}
+
+const SlideToggle = ({ id, name, checked }: SlideToggleProps) => {
+	return (
+		<div className="slide-toggle-container">
+			<span>{name}</span>
+			<label className="switch">
+				<Field id={id} name={name} type="checkbox" checked={checked} />
+				<span className="slider round"></span>
+			</label>
+		</div>
+	);
+};
+
+export default SlideToggle;
+
+
+>>>>  /src/components/shared/TextField.tsx  <<<<
+
+import { Field } from 'formik';
+import { capitalize } from '../../lib/helpers';
+
+interface Props {
+	id: string;
+	name: string;
+	placeholder?: string;
+	label?: string;
+	error?: boolean;
+	errorMessage?: string;
+}
+
+const TextField = ({
+	label,
+	name,
+	id,
+	placeholder,
+	error,
+	errorMessage,
+}: Props) => {
+	return (
+		<div className="text-field-container">
+			<label htmlFor={name}>{capitalize(label || name)}</label>
+			<Field id={id} type="text" name={name} placeholder={placeholder} />
+			{error && <span className="error-message">{errorMessage}</span>}
+		</div>
+	);
+};
+
+export default TextField;
+
+
+>>>>  /src/pages/Transactions/index.tsx  <<<<
+
+import React, { useContext, useEffect, useState } from 'react';
+import CreateTransaction from '../../components/Transactions/CreateTransaction';
+import TransactionList from '../../components/Transactions/TransactionsList';
+import TransactionsSearch from '../../components/Transactions/TransactionsSearch';
+import { DataContext } from '../../contexts/DataContext';
+import { CompleteTransaction } from '../../lib/helpers';
+
+const TransactionsPage = () => {
+	const { transactions, isLoading } = useContext(DataContext);
+
+	// prettier-ignore
+	const [shownTransactions, setShownTransactions] = useState<CompleteTransaction[]>([...transactions]);
+	const [searchTerm, setSearchTerm] = useState('');
+
+	const handleSearchChange = (searchStr: string) => {
+		setSearchTerm(searchStr.toLowerCase());
+	};
+
+	useEffect(() => {
+		if (searchTerm === '') {
+			setShownTransactions([...transactions]);
+		} else {
+			setShownTransactions(
+				transactions.filter(transaction => {
+					const clientName = `${transaction.client.firstName.toLowerCase()} ${transaction.client.lastName.toLowerCase()}`;
+					const motoNames = transaction.motorcycles
+						.map(moto => moto.name.toLowerCase())
+						.join(' ');
+
+					console.log({ clientName, motoNames, searchTerm });
+
+					return (
+						clientName.includes(searchTerm) ||
+						motoNames.includes(searchTerm) ||
+						transaction.total.toString().includes(searchTerm)
+					);
+				})
+			);
+		}
+	}, [searchTerm, transactions]);
+
+	return (
+		<div className="transactions-page-container">
+			<h1>Vendas</h1>
+			<div className="search-input-container">
+				<TransactionsSearch onChange={handleSearchChange} />
+			</div>
+
+			<TransactionList transactions={shownTransactions} />
+
+			<CreateTransaction />
+
+			{isLoading && <div>Loading....</div>}
+		</div>
+	);
+};
+
+export default TransactionsPage;
+
+
+>>>>  /src/pages/Motorcycles/index.tsx  <<<<
+
+import { useContext } from 'react';
+import CreateMotorcycle from '../../components/Motorcycles/CreateMotorcycle';
+import MotorcyclesList from '../../components/Motorcycles/MotorcyclesList';
+import { DataContext } from '../../contexts/DataContext';
+// import Global from '../../../hooks/Global';
+
+const Motorcycles = () => {
+	const { motorcycles } = useContext(DataContext);
+	return (
+		<div className="page-container">
+			<h1>Motocicletas</h1>
+
+			<MotorcyclesList motorcycles={motorcycles || []} />
+
+			<CreateMotorcycle />
+		</div>
+	);
+};
+
+export default Motorcycles;
+
+
+>>>>  /src/pages/api/fetchData.ts  <<<<
+
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { DBData, getCompleteTransactions } from '../../lib/helpers';
+import { prismaClient } from '../../lib/prismaClient';
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<DBData>
+) {
+	const clients = await prismaClient.client.findMany();
+	const motorcycles = await prismaClient.motorcycle.findMany();
+	const transactions = await prismaClient.transaction.findMany();
+
+	const completeTransactions = getCompleteTransactions(
+		clients,
+		motorcycles,
+		transactions
+	);
+
+	res.status(200).json({
+		clients,
+		motorcycles,
+		transactions,
+		completeTransactions,
+	});
+}
+
+
+>>>>  /src/pages/Clients/index.tsx  <<<<
+
+import React, { useContext, useEffect } from 'react';
+import ClientsList from '../../components/Clients/ClientsList';
+import CreateClient from '../../components/Clients/CreateClient';
+import { DataContext } from '../../contexts/DataContext';
+
+const Clients = () => {
+	const { isLoading, clients } = useContext(DataContext);
+	console.log({ clients });
+
+	useEffect(() => {
+		console.log(isLoading);
+	}, [isLoading]);
+
+	return (
+		<>
+			<div className="page-container">
+				<h1>Clientes</h1>
+
+				<ClientsList clients={clients} />
+
+				<CreateClient />
+			</div>
+		</>
+	);
+};
+
+export default Clients;
+
+
+>>>>  /src/pages/api/motorcycle/create.ts  <<<<
+
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Motorcycle } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { prismaClient } from '../../../lib/prismaClient';
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<Motorcycle>
+) {
+	const { motorcycleData } = req.body;
+
+	const data = await prismaClient.motorcycle.create({
+		data: {
+			...motorcycleData,
+		},
+	});
+
+	res.status(200).json({ ...data });
+}
+
+
+>>>>  /src/pages/api/motorcycle/delete.ts  <<<<
+
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Motorcycle } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { prismaClient } from '../../../lib/prismaClient';
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<Motorcycle>
+) {
+	const { motorcycleId } = req.body;
+
+	const data = await prismaClient.motorcycle.delete({
+		where: { id: motorcycleId },
+	});
+
+	res.status(200).json({ ...data });
+}
+
+
+>>>>  /src/pages/api/motorcycle/update.ts  <<<<
+
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Motorcycle } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { prismaClient } from '../../../lib/prismaClient';
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<Motorcycle>
+) {
+	const { motorcycleData } = req.body;
+
+	const data = await prismaClient.motorcycle.update({
+		data: {
+			...motorcycleData,
+		},
+		where: { id: motorcycleData.id },
+	});
+
+	res.status(200).json({ ...data });
+}
+
+
+>>>>  /src/pages/api/transaction/create.ts  <<<<
+
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Transaction } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { prismaClient } from '../../../lib/prismaClient';
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<Transaction>
+) {
+	const { transactionData } = req.body;
+
+	const data = await prismaClient.transaction.create({
+		data: {
+			...transactionData,
+		},
+	});
+
+	res.status(200).json({ ...data });
+}
+
+
+>>>>  /src/pages/api/transaction/delete.ts  <<<<
+
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Transaction } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { prismaClient } from '../../../lib/prismaClient';
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<Transaction>
+) {
+	const { transactionId } = req.body;
+	console.log({ transactionId });
+
+	const data = await prismaClient.transaction.delete({
+		where: { id: transactionId },
+	});
+
+	res.status(200).json({ ...data });
+}
+
+
+>>>>  /src/pages/api/transaction/update.ts  <<<<
+
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Transaction } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { prismaClient } from '../../../lib/prismaClient';
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<Transaction>
+) {
+	const { transactionData } = req.body;
+
+	const data = await prismaClient.transaction.update({
+		data: {
+			...transactionData,
+		},
+		where: { id: transactionData.id },
+	});
+
+	res.status(200).json({ ...data });
+}
+
+
+>>>>  /src/pages/api/client/create.ts  <<<<
+
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Client } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { prismaClient } from '../../../lib/prismaClient';
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<Client>
+) {
+	const { clientData } = req.body;
+
+	const data = await prismaClient.client.create({
+		data: {
+			...clientData,
+		},
+	});
+
+	res.status(200).json({ ...data });
+}
+
+
+>>>>  /src/pages/api/client/delete.ts  <<<<
+
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Client } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { prismaClient } from '../../../lib/prismaClient';
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<Client>
+) {
+	const { clientId } = req.body;
+
+	const data = await prismaClient.client.delete({
+		where: { id: clientId },
+	});
+
+	res.status(200).json({ ...data });
+}
+
+
+>>>>  /src/pages/api/client/update.ts  <<<<
+
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Client } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { prismaClient } from '../../../lib/prismaClient';
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse<Client>
+) {
+	const { clientData } = req.body;
+
+	const data = await prismaClient.client.update({
+		data: {
+			...clientData,
+		},
+		where: { id: clientData.id },
+	});
+
+	res.status(200).json({ ...data });
+}
+
+
