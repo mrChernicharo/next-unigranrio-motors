@@ -20,6 +20,7 @@
 *.pem
 .env
 *.md
+*.txt
 
 # debug
 npm-debug.log*

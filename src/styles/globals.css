@@ -128,14 +128,13 @@ select ::placeholder {
 }
 
 .page-container {
-	margin: 0 auto;
+	margin: 0 auto 54px;
 	padding-top: 2rem;
-	margin-bottom: 54px;
+	/* padding-inline: 6rem; */
 }
 
 .banner {
 	background: url('/banner-min.jpg') no-repeat fixed center;
-
 	width: 100vw;
 	height: 70vh;
 	box-shadow: 43px 43px 95px #1f2229, -13px -3px 55px var(--shadow);

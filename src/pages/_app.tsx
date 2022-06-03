@@ -1,7 +1,6 @@
 import type { AppProps } from 'next/app';
 import Nav from '../components/shared/Nav';
 import { DataContextProvider } from '../contexts/DataContext';
-import '../styles/animations.css';
 import '../styles/clients.css';
 import '../styles/globals.css';
 import '../styles/motos.css';

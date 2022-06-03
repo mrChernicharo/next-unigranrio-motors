@@ -4,3 +4,24 @@ p.email {
 	font-weight: 600;
 	margin-block: 0.5rem;
 }
+
+.clients-list {
+	padding-inline: 6rem;
+}
+
+@media screen and (max-width: 1080) {
+	.clients-list {
+		padding-inline: 4rem;
+	}
+}
+
+@media screen and (max-width: 780px) {
+	.clients-list {
+		padding-inline: 2rem;
+	}
+}
+@media screen and (max-width: 560px) {
+	.clients-list {
+		padding-inline: 0;
+	}
+}
