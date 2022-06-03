@@ -59,6 +59,7 @@
 
 .form-row {
 	display: flex;
+	justify-content: space-evenly;
 }
 
 .transaction-container {

@@ -148,12 +148,15 @@ select ::placeholder {
 
 @keyframes imageSlide {
 	0% {
+		background-position: 50%;
+	}
+	25% {
 		background-position: 40%;
 	}
-	50% {
+	75% {
 		background-position: 60%;
 	}
 	100% {
-		background-position: 40%;
+		background-position: 50%;
 	}
 }

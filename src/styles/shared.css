@@ -213,10 +213,10 @@
 	position: fixed;
 	z-index: 99999;
 	min-height: 400px;
-	top: 0;
-	left: 0;
-	top: 200px;
+	max-height: 66vh;
 	left: calc(50vw - var(--modal-width) / 2);
+	overflow-y: auto;
+	border-radius: 0.85rem;
 }
 
 .app-modal header {
