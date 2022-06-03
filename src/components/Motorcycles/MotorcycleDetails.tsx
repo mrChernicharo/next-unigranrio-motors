@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Motorcycle } from '@prisma/client';
 import { useState } from 'react';
 import { FiEdit, FiTrash, FiX } from 'react-icons/fi';
@@ -31,7 +32,10 @@ export default function MotorcycleDetails({
 						<FiX />
 					</button>
 
-					<MotorcycleForm motorcycle={motorcycle} />
+					<MotorcycleForm
+						motorcycle={motorcycle}
+						onSubmitted={onClose}
+					/>
 				</>
 			) : (
 				<>
@@ -44,7 +48,7 @@ export default function MotorcycleDetails({
 					</h5>
 					<p>{description}</p>
 
-					<img src={imgURL} />
+					<img src={imgURL} alt={name} />
 					<p>{toCurrency(price)}</p>
 				</>
 			)}

@@ -84,7 +84,6 @@ export const DataContextProvider = ({
 	const [currentPage, setCurrentPage] = useState('Home');
 
 	const withLoader = async cb => {
-		console.log('withLoader');
 		setIsLoading(true);
 		cb().then(() => setIsLoading(false));
 	};
@@ -138,7 +137,6 @@ export const DataContextProvider = ({
 	const createTransaction = async (postData: FormTransaction) => {
 		withLoader(async () => {
 			const res: Transaction = await postCreateTransaction(postData);
-			console.log(res);
 			const completeTransactions = getCompleteTransactions(
 				clients,
 				motorcycles,
@@ -150,7 +148,6 @@ export const DataContextProvider = ({
 	};
 	const updateTransaction = async (postData: FormTransaction) => {
 		withLoader(async () => {
-			console.log({ postData });
 			const res = await postUpdateTransaction(postData);
 			const completeTransactions = getCompleteTransactions(
 				clients,
@@ -166,7 +163,6 @@ export const DataContextProvider = ({
 	};
 	const deleteTransaction = async (transactionId: number) => {
 		withLoader(async () => {
-			console.log({ transactionId });
 			const res = await postDeleteTransaction(transactionId);
 			setTransactions(transactions.filter(t => t.id !== transactionId));
 		});
@@ -206,7 +202,6 @@ export const DataContextProvider = ({
 				setClients(clients);
 				setMotorcycles(motorcycles);
 				setTransactions(completeTransactions);
-				console.log('andale!');
 				setIsLoading(false);
 			});
 	}, []);

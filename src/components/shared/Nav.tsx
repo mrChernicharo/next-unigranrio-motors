@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import Link from 'next/link';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { DataContext } from '../../contexts/DataContext';
 
 const pages = [
@@ -12,17 +12,6 @@ const pages = [
 
 const Nav = () => {
 	const { currentPage, setCurrentPage } = useContext(DataContext);
-
-	// const handleNavClick = e => {
-	// 	const activePage = pages.find(
-	// 		page => page.name === e.target.textContent
-	// 	)?.name;
-	// 	setCurrentPage(activePage || 'Home');
-	// };
-
-	useEffect(() => {
-		console.log({ currentPage, pages });
-	}, [currentPage]);
 
 	return (
 		<div className="nav-container">

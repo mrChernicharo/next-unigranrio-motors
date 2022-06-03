@@ -13,7 +13,6 @@ const MotorcyclesList = ({ motorcycles }: MotorcyclesListProps) => {
 
 	const handleDeletedMotorcycle = (id: number) => {
 		deleteMotorcycle(id);
-		console.log(`delete ${id}`);
 	};
 	return (
 		<div className="motorcycles-list-container list-container">

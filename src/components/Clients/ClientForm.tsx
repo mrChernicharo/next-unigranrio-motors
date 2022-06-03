@@ -33,7 +33,7 @@ export default function CreateClientForm({
 				}}
 				validationSchema={clientSchema}
 				onSubmit={async (values, actions) => {
-					console.log({ values, actions });
+					// console.log({ values, actions });
 
 					if (mode === 'create') await createClient(values);
 					if (mode === 'edit')

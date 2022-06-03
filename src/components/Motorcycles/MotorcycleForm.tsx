@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Motorcycle } from '@prisma/client';
 import { Form, Formik, FormikProps } from 'formik';
 import { nanoid } from 'nanoid';
@@ -9,7 +10,7 @@ import TextField from '../shared/TextField';
 
 interface MotorcyclesFormProps {
 	motorcycle?: Motorcycle;
-	onSubmitted: () => void;
+	onSubmitted: (e: any) => void;
 }
 
 export default function MotorcycleForm({
@@ -36,13 +37,14 @@ export default function MotorcycleForm({
 				}}
 				validationSchema={motorcycleSchema}
 				onSubmit={async (values, actions) => {
-					console.log({ values, actions });
+					// console.log({ values, actions });
 
 					if (motoId) await updateMotorcycle({ ...values, id: motoId });
 					if (!motoId) await createMotorcycle(values);
 
-					onSubmitted()
-				}}
+					const event = new Event('submit', { bubbles: true });
+						onSubmitted(event);
+					}}
 			>
 				{({ errors, touched, values }: FormikProps<Partial<Motorcycle>>) => { 
 					return (
@@ -91,7 +93,7 @@ export default function MotorcycleForm({
 							/>
 
 							<div className="preview-container">
-								{values.imgURL && <img src={values.imgURL} />}
+								{values.imgURL && <img src={values.imgURL} alt="moto"/>}
 							</div>
 
 							<button type="submit">Salvar</button>

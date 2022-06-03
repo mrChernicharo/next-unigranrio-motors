@@ -45,8 +45,6 @@ export default function TransactionForm({ transaction, onSubmitted }: IProps) {
 	const getMoto = (id: number) => motorcycles.find(moto => moto.id === id);
 
 	const getTotal = (motos: { id: number; quantity: number }[]) => {
-		console.log(motos);
-		// return 0;
 		return motos.reduce(
 			(acc, moto) =>
 				(acc += (getMoto(Number(moto.id))?.price || 0) * moto.quantity),

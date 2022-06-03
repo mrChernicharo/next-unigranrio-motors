@@ -27,8 +27,6 @@ const TransactionsPage = () => {
 						.map(moto => moto.name.toLowerCase())
 						.join(' ');
 
-					console.log({ clientName, motoNames, searchTerm });
-
 					return (
 						clientName.includes(searchTerm) ||
 						motoNames.includes(searchTerm) ||

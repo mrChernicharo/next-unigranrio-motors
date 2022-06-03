@@ -1,29 +1,9 @@
-import { Client, Motorcycle, Transaction } from '@prisma/client';
 import type { GetStaticProps } from 'next';
-import { useContext } from 'react';
 import Home from '../components/Home';
-import { DataContext } from '../contexts/DataContext';
-import { CompleteTransaction, getCompleteTransactions } from '../lib/helpers';
+import { getCompleteTransactions } from '../lib/helpers';
 import { prismaClient } from '../lib/prismaClient';
 
-export interface InitialProps {
-	clients: Client[];
-	motorcycles: Motorcycle[];
-	transactions: Transaction[];
-	completeTransactions: CompleteTransaction[];
-}
-
-const Index = ({
-	clients,
-	motorcycles,
-	transactions,
-	completeTransactions,
-}: InitialProps) => {
-	console.log({ clients, motorcycles, transactions, completeTransactions });
-
-	const { setClients, setMotorcycles, setTransactions } =
-		useContext(DataContext);
-
+const Index = () => {
 	return <Home />;
 };
 

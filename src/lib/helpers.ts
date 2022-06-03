@@ -123,7 +123,6 @@ export async function postDeleteMotorcycle(motorcycleId: number) {
 // *************//
 
 export async function postCreateTransaction(postData: FormTransaction) {
-	console.log({ postData });
 	const { clientId, motorcycles } = postData;
 
 	const motosStr = motorcycles.map(m => `${m.id}:${m.quantity}`).join(',');
@@ -142,7 +141,6 @@ export async function postCreateTransaction(postData: FormTransaction) {
 }
 
 export async function postUpdateTransaction(postData: FormTransaction) {
-	console.log({ postData });
 	const { id, clientId, motorcycles } = postData;
 
 	const motosStr = motorcycles.map(m => `${m.id}:${m.quantity}`).join(',');

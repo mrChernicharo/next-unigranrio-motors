@@ -8,7 +8,6 @@ import '../styles/shared.css';
 import '../styles/transactions.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
-	console.log(pageProps);
 	return (
 		<DataContextProvider>
 			<Nav />

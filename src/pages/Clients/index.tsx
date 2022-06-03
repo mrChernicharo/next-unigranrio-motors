@@ -1,15 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import ClientsList from '../../components/Clients/ClientsList';
 import CreateClient from '../../components/Clients/CreateClient';
 import { DataContext } from '../../contexts/DataContext';
 
 const Clients = () => {
 	const { isLoading, clients } = useContext(DataContext);
-	console.log({ clients });
-
-	useEffect(() => {
-		console.log(isLoading);
-	}, [isLoading]);
 
 	return (
 		<>
@@ -19,6 +14,8 @@ const Clients = () => {
 				<ClientsList clients={clients} />
 
 				<CreateClient />
+
+				{isLoading && <div>Loading...</div>}
 			</div>
 		</>
 	);
