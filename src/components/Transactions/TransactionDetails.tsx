@@ -44,16 +44,19 @@ export default function TransactionDetails({
 							<FiEdit />
 						</button>
 
+						<h6>ID Venda: {id}</h6>
+
 						<h5>
 							{client.firstName} {client.lastName}
-							<p>{id}</p>
 						</h5>
 
-						{Object.entries(client).map(([k, v]) => (
-							<p key={nanoid()}>
-								<span className="key">{k}</span>:{v}
-							</p>
-						))}
+						{Object.entries(client)
+							.filter(([k, v]) => k !== 'id')
+							.map(([k, v]) => (
+								<p key={nanoid()}>
+									<span className="key">{k}</span>:{v}
+								</p>
+							))}
 
 						<hr />
 						{motorcycles.map(moto => {
@@ -63,7 +66,16 @@ export default function TransactionDetails({
 							return (
 								<ul key={nanoid()}>
 									<li className="transaction-li">
-										<p>Mototocicleta: {name}</p>
+										<h5
+											style={{
+												padding: 2,
+												marginBottom: 4,
+												// background: 'var(--dark-bg)',
+												// borderRadius: 6,
+											}}
+										>
+											{name}
+										</h5>
 
 										<div className="moto-details">
 											<img
@@ -72,8 +84,12 @@ export default function TransactionDetails({
 												alt="moto"
 											/>
 											<div>
+												{/* prettier-ignore */}
 												<p>
-													valor: {toCurrency(price)}
+													valor:
+													<span style={{ color: 'var(--accent)' }}>
+														{toCurrency(price)}
+													</span>
 												</p>
 												<p>ano: {year}</p>
 												<p>qtd. {quantity}x</p>
@@ -84,7 +100,12 @@ export default function TransactionDetails({
 							);
 						})}
 
-						<p>TOTAL: {toCurrency(total)}</p>
+						<h5>
+							Total:
+							<span style={{ color: 'var(--accent)' }}>
+								{toCurrency(total)}
+							</span>
+						</h5>
 						<br />
 					</>
 				)}
