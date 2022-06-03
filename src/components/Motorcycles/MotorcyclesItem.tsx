@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Motorcycle } from '@prisma/client';
 import { useState } from 'react';
 import { toCurrency } from '../../lib/helpers';
@@ -22,8 +23,6 @@ export default function MotorcycleItem({
 		setIsModalOpen(false);
 	};
 
-	// useEffect(() => console.log(isModalOpen), [isModalOpen]);
-
 	return (
 		<>
 			<div
@@ -38,7 +37,7 @@ export default function MotorcycleItem({
 					{description}
 				</p>
 
-				<img src={imgURL} />
+				<img src={imgURL} alt={`image of ${name}`} />
 				<p>{toCurrency(price)}</p>
 			</div>
 			{isModalOpen && (
