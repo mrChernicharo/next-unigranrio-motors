@@ -139,8 +139,21 @@ select ::placeholder {
 }
 
 .banner {
-	background: url('/banner-min.jpg') no-repeat fixed center;
+	background: url('/banner-min.jpg') no-repeat fixed;
 	width: 100vw;
 	height: 70vh;
 	box-shadow: 43px 43px 95px #1f2229, -13px -3px 55px var(--shadow);
+	animation: imageSlide 60s ease infinite;
+}
+
+@keyframes imageSlide {
+	0% {
+		background-position: 40%;
+	}
+	50% {
+		background-position: 60%;
+	}
+	100% {
+		background-position: 40%;
+	}
 }
