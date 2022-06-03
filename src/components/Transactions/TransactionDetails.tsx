@@ -44,7 +44,7 @@ export default function TransactionDetails({
 							<FiEdit />
 						</button>
 
-						<h6>ID Venda: {id}</h6>
+						<h6>ID Pedido: {id}</h6>
 
 						<h5>
 							{client.firstName} {client.lastName}
